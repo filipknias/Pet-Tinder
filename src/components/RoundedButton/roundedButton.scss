@@ -1,0 +1,35 @@
+@import "../../styles/mixins";
+@import "../../styles/variables.scss";
+
+.roundedButton {
+  @include flex(center, center);
+  background-color: $white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: $btn-box-shadow;
+  padding: 0.8rem;
+
+  &.icon-white {
+    color: $white;
+  }
+
+  &.icon-black {
+    color: $black;
+  }
+
+  &.icon-blue {
+    color: $blue;
+  }
+
+  &.icon-red {
+    color: $red;
+  }
+
+  &.icon-purple {
+    color: $purple;
+  }
+
+  &.icon-green {
+    color: $green;
+  }
+}

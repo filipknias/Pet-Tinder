@@ -1,0 +1,30 @@
+@import "../../styles/mixins";
+@import "../../styles/variables.scss";
+
+.tooltip {
+  position: relative;
+  font-family: $font-secondary;
+  &::after {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 110%;
+    left: -200%;
+    // transform: translateX(-50%);
+    transition: 0.2s ease-in-out;
+    content: attr(data-tooltip);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    background-color: $tooltip-bg;
+    color: $white;
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  &:hover {
+    &::after {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}

@@ -1,0 +1,32 @@
+@import "./variables.scss";
+@import "./mixins.scss";
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: $bg-color;
+  font-family: $font-primary;
+}
+
+a {
+  text-decoration: none;
+}
+
+.container {
+  width: 600px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 1rem;
+  overflow: hidden;
+  @include flex(center, center, column);
+  .container__main {
+    margin: 2rem auto;
+    flex: 1;
+    @include flex(center, space-between, column);
+  }
+}
+

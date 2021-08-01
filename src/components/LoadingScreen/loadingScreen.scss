@@ -1,0 +1,21 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loadingScreen {
+  width: $tinderCard-width;
+  height: $tinderCard-height;
+  border-radius: $tinderCard-border-radius;
+  background-color: $purple;
+  color: $white;
+  @include flex(center, center, column);
+  .loadingScreen__icon {
+    font-size: 5rem;
+    animation: rotate 1s infinite;
+  }
+}
+

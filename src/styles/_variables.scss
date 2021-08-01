@@ -1,0 +1,24 @@
+/* COLORS */
+$bg-color: #F3F4F8;
+$purple: #b165eb;// b165eb or A350E1
+$blue: #0FB3F1;
+$red: #FD5066;
+$green: #35E7B8;
+$white: #fff;
+$black: #000;
+$gray: rgba(0, 0, 0, 0.1);
+$btn-box-shadow: 5px 5px 15px -12px #000000;
+$tooltip-bg: rgba(0, 0, 0, 0.8);
+$tinderCard-overlay-bg: rgba(0, 0, 0, 0.6);
+
+/* FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Didact+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
+$font-primary: 'Didact Gothic', sans-serif;
+$font-secondary: 'Open Sans', sans-serif;
+
+/* OTHER */
+$tinderCard-border-radius: 20px;
+$tinderCard-transition: all 0.2s ease-in-out;
+$tinderCard-width: 500px;
+$tinderCard-height: 700px;

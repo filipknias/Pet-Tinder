@@ -1,0 +1,15 @@
+@import "../../styles/mixins";
+@import "../../styles/variables";
+
+.header {
+  @include flex(center, space-between);
+  width: 100%;
+  .header__group__container {
+    @include flex(center, center);
+    .header__group__container__icon {
+      color: $purple;
+      margin-right: 0.7rem;
+      font-size: 2rem;
+    }
+  }
+}

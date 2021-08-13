@@ -8,18 +8,18 @@ interface Props {
   animal: Pet;
 }
 
+const decodeHtml = (html: string) => {
+  var txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
+
 const TinderCard: React.FC<Props> = ({ animal }) => {
   const backgroundImage = animal.primary_photo_cropped ? `url(${animal.primary_photo_cropped.large})` : undefined;
- 
+
   // TODO: make a distance info and location button in header
   // TODO: think about what to place in hidden info
   // TODO: make a overlay slider component
-
-  const decodeHtml = (html: string) => {
-    var txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
-}
 
   return (
       <div className="tinderCard">

@@ -1,6 +1,15 @@
 @import "../../styles/mixins";
 @import "../../styles/variables.scss";
 
+@mixin iconColor($fontColor, $bgColor) {
+  color: $fontColor;
+  transition: all 0.1s ease-in-out;
+  &:hover {
+    background-color: $bgColor;
+    color :$white;
+  }
+}
+
 .roundedButton {
   @include flex(center, center);
   background-color: $white;
@@ -8,28 +17,15 @@
   cursor: pointer;
   box-shadow: $btn-box-shadow;
   padding: 0.8rem;
+  &.icon-black { @include iconColor($black, $black); }
 
-  &.icon-white {
-    color: $white;
-  }
+  &.icon-blue { @include iconColor($blue, $blue); }
 
-  &.icon-black {
-    color: $black;
-  }
+  &.icon-red { @include iconColor($red, $red); }
 
-  &.icon-blue {
-    color: $blue;
-  }
+  &.icon-purple { @include iconColor($purple, $purple); }
 
-  &.icon-red {
-    color: $red;
-  }
+  &.icon-green { @include iconColor($green, $green); }
 
-  &.icon-purple {
-    color: $purple;
-  }
-
-  &.icon-green {
-    color: $green;
-  }
+  &.icon-yellow { @include iconColor($yellow, $yellow); }
 }

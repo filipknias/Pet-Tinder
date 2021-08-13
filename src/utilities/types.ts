@@ -4,7 +4,13 @@ export enum Colors {
   red = "red",
   black = "black",
   white = "white",
-  purple = "purple"
+  purple = "purple",
+  yellow = "yellow"
+}
+
+export enum Placement {
+  top = "top",
+  bottom = "bottom"
 }
 
 export interface Token {

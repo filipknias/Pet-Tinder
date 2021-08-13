@@ -7,12 +7,12 @@
 }
 
 .loadingScreen {
-  width: $tinderCard-width;
-  height: $tinderCard-height;
-  border-radius: $tinderCard-border-radius;
-  background-color: $purple;
-  color: $white;
+  @include tinderCard($white);
   @include flex(center, center, column);
+  background-color: $purple;
+  @media (max-width: $breakpoint-sm) {
+    width: 100%;
+  }
   .loadingScreen__icon {
     font-size: 5rem;
     animation: rotate 1s infinite;

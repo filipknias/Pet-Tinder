@@ -1,15 +1,39 @@
 @import "../../styles/mixins";
 @import "../../styles/variables";
 
+$headerBreakpointFontSize: 2rem;
+
 .header {
   @include flex(center, space-between);
   width: 100%;
-  .header__group__container {
-    @include flex(center, center);
-    .header__group__container__icon {
-      color: $purple;
-      margin-right: 0.7rem;
-      font-size: 2rem;
+  .header__group {
+      .header__group__container {
+        @include flex(center, center);
+        .header__group__container__title {
+          @media (max-width: $breakpoint-sm) {
+            font-size: $headerBreakpointFontSize;
+          }
+        }
+        .header__group__container__icon {
+          color: $purple;
+          margin-right: 0.7rem;
+          font-size: 2rem;
+          @media (max-width: $breakpoint-sm) {
+            font-size: $headerBreakpointFontSize;
+          }
+        }
+    }
+    .header__group__container__poweredby {
+      @media (max-width: $breakpoint-sm) {
+        font-size: 1rem;
+      }
+    }
+  }
+  .header__buttons {
+    @include flex(center, flex-end);
+    flex: 1;
+    & > div {
+      margin-left: 1rem;
     }
   }
 }

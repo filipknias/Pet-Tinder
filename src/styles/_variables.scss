@@ -6,6 +6,7 @@ $red: #FD5066;
 $green: #35E7B8;
 $white: #fff;
 $black: #000;
+$yellow: #FDD373;
 $gray: rgba(0, 0, 0, 0.1);
 $btn-box-shadow: 5px 5px 15px -12px #000000;
 $tooltip-bg: rgba(0, 0, 0, 0.8);
@@ -20,5 +21,8 @@ $font-secondary: 'Open Sans', sans-serif;
 /* OTHER */
 $tinderCard-border-radius: 20px;
 $tinderCard-transition: all 0.2s ease-in-out;
-$tinderCard-width: 500px;
+$tinderCard-width: 100%;
 $tinderCard-height: 700px;
+
+/* BREAKPOINTS */
+$breakpoint-sm: 600px;

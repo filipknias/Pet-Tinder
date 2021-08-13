@@ -3,10 +3,7 @@
 
 .tinderCard {
   position: relative;
-  width: $tinderCard-width;
-  height: $tinderCard-height;
-  color: $white;
-  border-radius: $tinderCard-border-radius;
+  @include tinderCard($white);
 
   &:hover {
     .tinderCard__overlay {

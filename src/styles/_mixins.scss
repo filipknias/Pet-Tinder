@@ -1,6 +1,18 @@
+@import "./variables";
+
 @mixin flex($alignItems, $justifyContent, $direction: row) {
   display: flex;
   flex-direction: $direction;
   align-items: $alignItems;
   justify-content: $justifyContent;
+}
+
+@mixin tinderCard($fontColor) {
+  width: $tinderCard-width;
+  height: $tinderCard-height;
+  color: $fontColor;
+  border-radius: $tinderCard-border-radius;
+  @media (max-width: $breakpoint-sm) {
+    height: 600px;
+  }
 }

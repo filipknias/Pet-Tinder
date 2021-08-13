@@ -1,32 +1,25 @@
 import React from 'react';
 import "./roundedButton.scss";
 import { Colors } from "../../utilities/types";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface Props {
-  icon: any;
-  width?: number;
-  height?: number;
   color: Colors;
-  size?: number | string;
+  iconFontSize?: number | string;
+  padding?: number | string;
   onClick?: () => void;
+  children: React.ReactElement;
 }
 
-const RoundedButton: React.FC<Props> = ({ 
-  icon, 
-  width, 
-  height, 
-  color,
-  size,
-  onClick
-}) => {
+// TODO: import sass variables
+
+const RoundedButton: React.FC<Props> = ({ children, color, iconFontSize, onClick, padding }) => {
   return (
     <div 
       className={`roundedButton icon-${color}`} 
-      style={{ width, height, fontSize: size }} 
-      onClick={onClick || undefined}
+      onClick={onClick || undefined} 
+      style={{ fontSize: iconFontSize, padding }}
     >
-      <FontAwesomeIcon icon={icon} />
+      {children}
     </div>
   )
 }

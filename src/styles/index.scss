@@ -28,6 +28,7 @@ a {
     padding: 1rem 0.8rem;
   }
   .container__main {
+    position: relative;
     width: 100%;
     margin: 1.5rem auto;
     flex: 1;
@@ -39,5 +40,6 @@ a {
   .container__main__buttons {
     @include flex(center, space-around);
     width: $tinderCard-width;
+    margin-top: auto;
   }
 }

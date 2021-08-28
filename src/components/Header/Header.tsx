@@ -2,12 +2,11 @@ import React from 'react';
 import "./header.scss";
 import RoundedButton from "../RoundedButton/RoundedButton";
 import Tooltip from "../Tooltip/Tooltip";
-import { Colors, Placement } from "../../utilities/types";
+import { Colors } from "../../utilities/types";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faPaw, faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faPaw, faHeart, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
 const Header: React.FC = () => {
-  // TODO: make mobile dropdown
   return (
     <div className="header">
         <div className="header__group">
@@ -29,6 +28,11 @@ const Header: React.FC = () => {
           <Tooltip text="Profile">
             <RoundedButton color={Colors.blue} iconFontSize="1rem"> 
               <FontAwesomeIcon icon={faUser} />
+            </RoundedButton>
+          </Tooltip>
+          <Tooltip text="Info">
+            <RoundedButton color={Colors.purple} iconFontSize="1rem"> 
+              <FontAwesomeIcon icon={faInfoCircle} />
             </RoundedButton>
           </Tooltip>
         </div>

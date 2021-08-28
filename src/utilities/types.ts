@@ -86,8 +86,8 @@ export interface Contact {
 }
 
 export interface Address {
-  address1: null;
-  address2: null;
+  address1: string | null;
+  address2: string | null;
   city:     string;
   state:    string;
   postcode: string;
@@ -106,3 +106,20 @@ export interface PrimaryPhotoCropped {
   large:  string;
   full:   string;
 }
+
+export interface Pagination {
+  count_per_page: number;
+  total_count:    number;
+  current_page:   number;
+  total_pages:    number;
+  _links:         Links;
+}
+
+export interface Links {
+  next: Next;
+}
+
+export interface Next {
+  href: string;
+}
+

@@ -1,7 +1,7 @@
 @import "../../styles/mixins";
 @import "../../styles/variables";
 
-$headerBreakpointFontSize: 2rem;
+$headerBreakpointFontSize: 1.5rem;
 
 .header {
   @include flex(center, space-between);
@@ -9,6 +9,8 @@ $headerBreakpointFontSize: 2rem;
   .header__group {
       .header__group__container {
         @include flex(center, center);
+        white-space: nowrap;
+        text-overflow: ellipsis;
         .header__group__container__title {
           @media (max-width: $breakpoint-sm) {
             font-size: $headerBreakpointFontSize;
@@ -25,7 +27,7 @@ $headerBreakpointFontSize: 2rem;
     }
     .header__group__container__poweredby {
       @media (max-width: $breakpoint-sm) {
-        font-size: 1rem;
+        font-size: 0.8rem;
       }
     }
   }

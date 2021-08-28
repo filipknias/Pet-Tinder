@@ -1,11 +1,11 @@
 @import "../../styles/mixins";
 @import "../../styles/variables.scss";
 
-@mixin iconColor($fontColor, $bgColor) {
-  color: $fontColor;
+@mixin iconColor($color) {
+  color: $color;
   transition: all 0.1s ease-in-out;
   &:hover {
-    background-color: $bgColor;
+    background-color: $color;
     color :$white;
   }
 }
@@ -17,15 +17,16 @@
   cursor: pointer;
   box-shadow: $btn-box-shadow;
   padding: 0.8rem;
-  &.icon-black { @include iconColor($black, $black); }
 
-  &.icon-blue { @include iconColor($blue, $blue); }
+  &.roundedButton--icon-black { @include iconColor($black); }
 
-  &.icon-red { @include iconColor($red, $red); }
+  &.roundedButton--icon-blue { @include iconColor($blue); }
 
-  &.icon-purple { @include iconColor($purple, $purple); }
+  &.roundedButton--icon-red { @include iconColor($red); }
 
-  &.icon-green { @include iconColor($green, $green); }
+  &.roundedButton--icon-purple { @include iconColor($purple); }
 
-  &.icon-yellow { @include iconColor($yellow, $yellow); }
+  &.roundedButton--icon-green { @include iconColor($green); }
+
+  &.roundedButton--icon-yellow { @include iconColor($yellow); }
 }

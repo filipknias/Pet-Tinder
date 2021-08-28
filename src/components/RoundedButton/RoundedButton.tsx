@@ -10,12 +10,10 @@ interface Props {
   children: React.ReactElement;
 }
 
-// TODO: import sass variables
-
 const RoundedButton: React.FC<Props> = ({ children, color, iconFontSize, onClick, padding }) => {
   return (
     <div 
-      className={`roundedButton icon-${color}`} 
+      className={`roundedButton roundedButton--icon-${color}`} 
       onClick={onClick || undefined} 
       style={{ fontSize: iconFontSize, padding }}
     >

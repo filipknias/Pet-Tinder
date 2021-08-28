@@ -16,3 +16,17 @@
     height: 600px;
   }
 }
+
+@mixin hideScrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin buttonReset {
+  outline: none;
+  border: none;
+  cursor: pointer;
+}

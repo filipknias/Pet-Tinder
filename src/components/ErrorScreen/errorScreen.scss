@@ -5,6 +5,7 @@
   @include tinderCard($white);
   @include flex(center, center, column);
   background-color: $red;
+  text-align: center;
   .errorScreen__icon {
     font-size: 5rem;
   }

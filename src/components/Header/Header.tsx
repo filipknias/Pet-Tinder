@@ -4,7 +4,7 @@ import RoundedButton from "../RoundedButton/RoundedButton";
 import Tooltip from "../Tooltip/Tooltip";
 import { Colors } from "../../utilities/types";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faPaw, faHeart, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faPaw, faHeart, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 const Header: React.FC = () => {
   return (

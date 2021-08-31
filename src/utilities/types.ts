@@ -13,6 +13,10 @@ export enum Placement {
   bottom = "bottom"
 }
 
+export interface StorageToken extends Token {
+  expiration_time: number;
+}
+
 export interface Token {
   token_type: string;
   expires_in: number;

@@ -12,13 +12,14 @@ interface Props {
 
 const RoundedButton: React.FC<Props> = ({ children, color, iconFontSize, onClick, padding }) => {
   return (
-    <div 
+    <button
+      type="button" 
       className={`roundedButton roundedButton--icon-${color}`} 
       onClick={onClick || undefined} 
       style={{ fontSize: iconFontSize, padding }}
     >
       {children}
-    </div>
+    </button>
   )
 }
 

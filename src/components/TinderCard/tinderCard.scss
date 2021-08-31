@@ -14,14 +14,15 @@
 }
 
 .tinderCard {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   @include tinderCard($white);
   transition: all 0.2s ease-in-out;
 
   &:hover {
     .tinderCard__overlay {
+      overflow-y: auto;
+      overflow-x: hidden;
+      @include hideScrollbar;
       background-color: $tinderCard-overlay-bg;
       .tinderCard__overlay__info {
         height: 100%;
@@ -63,9 +64,8 @@
   }  
   
   .tinderCard__overlay {
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
-    @include hideScrollbar;
     border-radius: inherit;
     position: relative;
     top: 0;
@@ -90,6 +90,9 @@
       .tinderCard__overlay__info__subheader {
         font-weight: 300;
         font-size: 2rem;
+        @media (max-width: $breakpoint-sm) {
+          font-size: 1.8rem;
+        }
       }
       .tinderCard__overlay__info__hidden {
         visibility: hidden;

@@ -12,6 +12,7 @@
 
 .roundedButton {
   @include flex(center, center);
+  @include buttonReset;
   background-color: $white;
   border-radius: 50%;
   cursor: pointer;

@@ -13,7 +13,8 @@
   color: $fontColor;
   border-radius: $tinderCard-border-radius;
   @media (max-width: $breakpoint-sm) {
-    height: 600px;
+    height: 100%;
+    margin-bottom: 1.2rem;
   }
 }
 
@@ -29,4 +30,9 @@
   outline: none;
   border: none;
   cursor: pointer;
+}
+
+@mixin tinderButtonsContainer {
+  @include flex(center, space-around);
+  width: 100%;
 }

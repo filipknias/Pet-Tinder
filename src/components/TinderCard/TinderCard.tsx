@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Pet } from "../../utilities/types";
 import "./tinderCard.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,11 +9,8 @@ interface Props {
   animal: Pet;
 }
 
-// TODO: check if its correct
-const decodeHtml = (html: string): string => {
-  const txt = document.createElement("textarea");
-  txt.innerHTML = html;
-  return txt.value;
+const encodeHTMLEntities = (text: string): string => {
+  return text.replace(/([&<>\"'])/g, (match: any) => text[match]);
 }
 
 const formatPetPublishedDate = (date: string): string => {
@@ -27,16 +24,13 @@ const preventNullValue = (value: any): string => {
   
 const TinderCard = React.forwardRef<HTMLDivElement, Props>(({ animal }, ref) => {
   const backgroundImage = animal.primary_photo_cropped ? `url(${animal.primary_photo_cropped.large})` : undefined;
-  const [isMobile, setIsMobile] = useState<boolean>(false);
   const overlayRef = useRef<HTMLDivElement | null>(null); 
-
-  // TODO: make a distance info and location button in header
 
   const handleOverlayMouseLeave = () => {
     if (overlayRef.current === null) return;
     overlayRef.current.scrollTo(0, 0);
-  }
-  
+  };
+ 
   return (
       <div className="tinderCard" ref={ref}>
         <div className="tinderCard__image" style={{ backgroundImage }}>
@@ -54,12 +48,12 @@ const TinderCard = React.forwardRef<HTMLDivElement, Props>(({ animal }, ref) => 
           ref={overlayRef}
         >
           <div className="tinderCard__overlay__info">
-            <h1 className="tinderCard__overlay__info__header">{animal.name}</h1>
+            <h1 className="tinderCard__overlay__info__header">{encodeHTMLEntities(animal.name)}</h1>
             <h4 className="tinderCard__overlay__info__subheader">{animal.age}, {animal.type}</h4>
             {/* OVERLAY HIDDEN START */}
             <div className="tinderCard__overlay__info__hidden">
               <p className="tinderCard__overlay__info__hidden__description">
-                {decodeHtml(animal.description)}
+                {animal.description ? encodeHTMLEntities(animal.description) : null}
               </p>
               {/* OVERLAY CONTENT START */}
               <div className="tinderCard__overlay__info__hidden__content">

@@ -4,12 +4,14 @@ import Header from "./components/Header/Header";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import IndexPage from "./pages/Index/IndexPage";
-import SignInPage from "./pages/Login/Login";
+import LoginPage from "./pages/Auth/Login";
+import RegisterPage from "./pages/Auth/Register";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
+import routes from "./utilities/routes";
 
 const App: React.FC = () => {
   return (
@@ -19,8 +21,9 @@ const App: React.FC = () => {
           <Header />
           <div className="container__main">
             <Switch>
-              <Route path="/" exact component={IndexPage} />
-              <Route path="/sign-in" component={SignInPage} />
+              <Route path={routes.index} exact component={IndexPage} />
+              <Route path={routes.signIn} component={LoginPage} />
+              <Route path={routes.register} component={RegisterPage} />
             </Switch>
           </div>
         </div>

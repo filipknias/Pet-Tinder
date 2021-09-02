@@ -1,0 +1,50 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.form {
+  @include flex(center, center, column);
+  gap: 1rem;
+  .form__formGroup {
+    width: 100%;
+    .form__formGroup__label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+    .form__formGroup__input {
+      @include inputReset;
+      width: 100%;
+      font-family: $font-secondary;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+      &:focus {
+        border: 2px solid $dark-green;
+      }
+    }
+    .form__formGroup__forgotPassword {
+      color: $dark-green;
+      cursor: pointer;
+      margin-top: 0.8rem;
+      display: inline-block;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  .form__submit {
+    @include buttonReset;
+    margin-top: 0.8rem;
+    border-radius: 10px;
+    text-align: center;
+    color: $white;
+    background-color: $purple;
+    padding: 0.5rem 1rem;
+    font-family: $font-secondary;
+    font-size: 1.2rem;
+    width: 100%;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      background-color: $dark-purple;
+    }
+  }
+}

@@ -1,0 +1,47 @@
+@import "../../styles/variables";
+@import "../../styles/mixins";
+
+.authForm {
+  background-color: $white;
+  border-radius: $tinderCard-border-radius;
+  margin: 1rem 0;
+  width: 100%;
+  font-family: $font-secondary;
+  box-shadow: $btn-box-shadow;
+  .authForm__headerContainer {
+    @include flex(flex-start, space-between);
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+    background-color: $purple;
+    color: $white;
+    padding: 2rem;
+    @media (max-width: $breakpoint-sm) {
+      padding: 2rem 1.2rem;
+    }
+    .authForm__headerContainer__header {
+      margin-bottom: 0.3rem;
+      letter-spacing: 1px;
+      @media (max-width: $breakpoint-sm) {
+        font-size: 1.6rem;
+      }
+    }
+    .authForm__headerContainer__poweredby {
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      @media (max-width: $breakpoint-sm) {
+        font-size: 0.9rem;
+      }
+    }
+  }
+  .authForm__main {
+    padding: 2rem 1.5rem; 
+    @media (max-width: $breakpoint-sm) {
+      padding: 2rem 1rem;
+    }
+    .authForm__main__buttonsContainer {
+      @include flex(center, center);
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+  }
+}

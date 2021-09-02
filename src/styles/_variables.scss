@@ -8,9 +8,13 @@ $white: #fff;
 $black: #000;
 $yellow: #FDD373;
 $gray: rgba(0, 0, 0, 0.1);
-$btn-box-shadow: 5px 5px 15px -12px #000000;
+$btn-box-shadow: 5px 5px 15px -11px #000000;
 $tooltip-bg: rgba(0, 0, 0, 0.8);
 $tinderCard-overlay-bg: rgba(0, 0, 0, 0.6);
+$dark-blue: #4285F4;
+$dark-blue-hover: #366fcc;
+$dark-green: #25be95;
+$dark-purple: #9a4ed4;
 
 /* HOVER COLORS */
 $purple-hover: #8f4fc0;
@@ -20,6 +24,8 @@ $purple-hover: #8f4fc0;
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
 $font-primary: 'Didact Gothic', sans-serif;
 $font-secondary: 'Open Sans', sans-serif;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
 
 /* OTHER */
 $tinderCard-border-radius: 20px;

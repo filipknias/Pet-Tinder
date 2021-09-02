@@ -5,6 +5,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import { Colors } from "../../utilities/types";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faPaw, faHeart, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   return (
@@ -21,17 +22,19 @@ const Header: React.FC = () => {
         </div>
         <div className="header__buttons">
           <Tooltip text="Likes">
-            <RoundedButton color={Colors.green} iconFontSize="1rem"> 
+            <RoundedButton color={Colors.green} style={{ fontSize: "1rem" }}> 
               <FontAwesomeIcon icon={faHeart} />
             </RoundedButton>
           </Tooltip>
           <Tooltip text="Profile">
-            <RoundedButton color={Colors.blue} iconFontSize="1rem"> 
-              <FontAwesomeIcon icon={faUser} />
-            </RoundedButton>
+            <Link to="/sign-in">
+              <RoundedButton color={Colors.blue} style={{ fontSize: "1rem" }}> 
+                <FontAwesomeIcon icon={faUser} />
+              </RoundedButton>
+            </Link>
           </Tooltip>
           <Tooltip text="Info">
-            <RoundedButton color={Colors.purple} iconFontSize="1rem"> 
+            <RoundedButton color={Colors.purple} style={{ fontSize: "1rem" }}> 
               <FontAwesomeIcon icon={faInfoCircle} />
             </RoundedButton>
           </Tooltip>

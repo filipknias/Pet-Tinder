@@ -32,6 +32,10 @@
   cursor: pointer;
 }
 
+@mixin inputReset {
+  outline: none;
+}
+
 @mixin tinderButtonsContainer {
   @include flex(center, space-around);
   width: 100%;

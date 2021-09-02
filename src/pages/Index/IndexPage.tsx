@@ -163,22 +163,38 @@ const IndexPage: React.FC = () => {
         )}
         <div className="tinderButtons">
           <Tooltip text="Reload" placement={Placement.top}>
-            <RoundedButton color={Colors.yellow} iconFontSize="2.2rem" padding="1rem" onClick={handleRefresh}>
+            <RoundedButton 
+              color={Colors.yellow} 
+              style={{ fontSize: "2.2rem", padding: "1rem" }} 
+              onClick={handleRefresh}
+            >
               <FontAwesomeIcon icon={faRedo} />
             </RoundedButton>
           </Tooltip>
           <Tooltip text="Dislike" placement={Placement.top}>
-            <RoundedButton color={Colors.red} iconFontSize="2.2rem" padding="1rem" onClick={buttonsDisabled ? undefined : handleDislikeClick}>
+            <RoundedButton 
+              color={Colors.red} 
+              style={{ fontSize: "2.2rem", padding: "1rem" }} 
+              onClick={buttonsDisabled ? undefined : handleDislikeClick}
+            >
               <FontAwesomeIcon icon={faTimesCircle} />
             </RoundedButton>
           </Tooltip>
           <Tooltip text="Like" placement={Placement.top}>
-            <RoundedButton color={Colors.green} iconFontSize="2.2rem" padding="1rem" onClick={buttonsDisabled ? undefined : handleLikeClick}>
+            <RoundedButton 
+              color={Colors.green}  
+              style={{ fontSize: "2.2rem", padding: "1rem" }} 
+              onClick={buttonsDisabled ? undefined : handleLikeClick}
+            >
               <FontAwesomeIcon icon={faHeart} />
             </RoundedButton>
           </Tooltip>
           <Tooltip text="Filter" placement={Placement.top}>
-            <RoundedButton color={Colors.purple} iconFontSize="2.2rem" padding="1rem">
+            <RoundedButton 
+              color={Colors.purple} 
+              style={{ fontSize: "2.2rem", 
+              padding: "1rem" }}
+            >
               <FontAwesomeIcon icon={faSortAmountUp} />
             </RoundedButton>
           </Tooltip>

@@ -4,19 +4,18 @@ import { Colors } from "../../utilities/types";
 
 interface Props {
   color: Colors;
-  iconFontSize?: number | string;
-  padding?: number | string;
+  style?: React.CSSProperties;
   onClick?: () => void;
   children: React.ReactElement;
 }
 
-const RoundedButton: React.FC<Props> = ({ children, color, iconFontSize, onClick, padding }) => {
+const RoundedButton: React.FC<Props> = ({ children, color, style, onClick }) => {
   return (
     <button
       type="button" 
       className={`roundedButton roundedButton--icon-${color}`} 
       onClick={onClick || undefined} 
-      style={{ fontSize: iconFontSize, padding }}
+      style={style}
     >
       {children}
     </button>

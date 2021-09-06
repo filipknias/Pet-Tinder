@@ -1,5 +1,6 @@
-import { Pet, StorageToken, Pagination } from "../../utilities/types";
-import { PetsActionTypes, SET_PETS, SET_PAGINATION, SET_TOKEN, SET_ERROR, SET_LOADING } from "../types";
+import { Pet, Pagination } from "../../utilities/types/apiTypes";
+import { StorageToken } from "../../utilities/types/globalTypes";
+import { PetsActionTypes, SET_PETS, SET_PAGINATION, SET_TOKEN, SET_ERROR, SET_LOADING } from "../types/petsTypes";
 
 export interface PetsState {
   pets: Pet[];

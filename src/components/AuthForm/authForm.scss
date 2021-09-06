@@ -36,7 +36,7 @@
   .authForm__main {
     padding: 2rem 1.5rem; 
     @media (max-width: $breakpoint-sm) {
-      padding: 2rem 1rem;
+      padding: 2rem 0.8rem;
     }
     .authForm__main__buttonsContainer {
       @include flex(center, center);

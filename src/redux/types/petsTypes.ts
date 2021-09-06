@@ -1,11 +1,11 @@
-import { Pet, StorageToken, Pagination } from "../utilities/types";
+import { Pet, Pagination } from "../../utilities/types/apiTypes";
+import { StorageToken } from "../../utilities/types/globalTypes";
 
-// PETS REDUCER
 export const SET_PETS = "SET_PETS";
 export const SET_PAGINATION = "SET_PAGINATION";
 export const SET_TOKEN = "SET_TOKEN";
-export const SET_LOADING = "SET_LOADING";
-export const SET_ERROR = "SET_ERROR";
+export const SET_LOADING = "SET_PETS_LOADING";
+export const SET_ERROR = "SET_PETS_ERROR";
  
 export interface SetPetsAction { 
   type: typeof SET_PETS,
@@ -28,4 +28,4 @@ export interface SetErrorAction {
   payload: boolean,
 };
 
-export type PetsActionTypes = SetPetsAction | SetPaginationAction | SetTokenAction | SetLoadingAction | SetErrorAction;
+export type PetsActionTypes = SetPetsAction | SetPaginationAction | SetTokenAction | SetLoadingAction | SetErrorAction; 

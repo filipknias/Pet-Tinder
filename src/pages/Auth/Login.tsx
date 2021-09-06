@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import Tooltip from "../../components/Tooltip/Tooltip";
-import { Colors } from "../../utilities/types";
+import { Colors } from "../../utilities/types/globalTypes";
 import { Link } from "react-router-dom";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import routes from "../../utilities/routes";

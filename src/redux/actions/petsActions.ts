@@ -1,9 +1,11 @@
-import { SET_PETS, SET_PAGINATION, SET_LOADING, SET_ERROR, SET_TOKEN } from "../types";
+import { Dispatch } from "redux";
+import { PetsActionTypes } from "../../redux/types/petsTypes";
+import { SET_PETS, SET_PAGINATION, SET_LOADING, SET_ERROR, SET_TOKEN } from "../types/petsTypes";
 import { formatToken } from "../../utilities/helpers";
 import axios from "axios";
 const PROXY_SERVER = "https://thingproxy.freeboard.io/fetch";
 
-export const getPets = (page: number = 1) => async (dispatch: Function) => {
+export const getPets = (page: number = 1) => async (dispatch: Dispatch<PetsActionTypes>) => {
   dispatch({ type: SET_ERROR, payload: false });
   dispatch({ type: SET_LOADING, payload: true });
 
@@ -19,7 +21,7 @@ export const getPets = (page: number = 1) => async (dispatch: Function) => {
   dispatch({ type: SET_LOADING, payload: false });
 }
 
-export const getToken = () => async (dispatch: Function) => {
+export const getToken = () => async (dispatch: Dispatch<PetsActionTypes>) => {
   dispatch({ type: SET_ERROR, payload: false });
   dispatch({ type: SET_LOADING, payload: true });
 

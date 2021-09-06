@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./indexPage.scss";
 import axios from "axios";
-import { Placement, Colors, StorageToken } from "../../utilities/types";
+import { Placement, Colors, StorageToken } from "../../utilities/types/globalTypes";
 import TinderCard from "../../components/TinderCard/TinderCard";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import ErrorScreen from "../../components/ErrorScreen/ErrorScreen";
@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faTimesCircle, faRedo, faSortAmountUp } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from "react-redux";
 import { getToken, getPets } from "../../redux/actions/petsActions";
-import { SET_TOKEN, SET_PAGINATION } from "../../redux/types";
+import { SET_TOKEN, SET_PAGINATION } from "../../redux/types/petsTypes";
 import { formatToken } from "../../utilities/helpers";
 import { RootState } from "../../redux/store";
 
@@ -27,6 +27,8 @@ const IndexPage: React.FC = () => {
   const { pets, pagination, token, isError, loading } = useSelector((state: RootState) => state.petsReducer);
   const dispatch = useDispatch();
   const LOCAL_STORAGE_TOKEN_KEY = "PET_TINDER_TOKEN";
+
+  // TODO: unscubscribe to axios requst in () => useEffect function
 
   useEffect(() => { 
     // Check if token is in localstorage

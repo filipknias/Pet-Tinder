@@ -1,5 +1,5 @@
-import { Pet, Pagination } from "../../utilities/types/apiTypes";
-import { StorageToken } from "../../utilities/types/globalTypes";
+import { Pet, Pagination } from "../../types/apiTypes";
+import { StorageToken } from "../../types/globalTypes";
 
 export const SET_PETS = "SET_PETS";
 export const SET_PAGINATION = "SET_PAGINATION";

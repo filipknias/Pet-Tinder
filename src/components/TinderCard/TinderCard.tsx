@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Pet } from "../../utilities/types/apiTypes";
+import { Pet } from "../../types/apiTypes";
 import "./tinderCard.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhotoVideo } from '@fortawesome/free-solid-svg-icons';

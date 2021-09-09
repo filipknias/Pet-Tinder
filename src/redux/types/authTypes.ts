@@ -1,24 +1,28 @@
-import User from "../../utilities/models/User";
+import User from "../../models/User";
 
-export const SET_USER = "SET_USER";
+export const AUTH_START = "AUTH_START";
+export const AUTH_SUCCESS = "AUTH_SUCCESS";
+export const AUTH_FAIL = "AUTH_FAIL";
+
+export const VERIFY_START = 'VERIFY_START';
+export const VERIFY_SUCCESS = 'VERIFY_SUCCESS';
+export const VERIFY_FAIL = 'VERIFY_FAIL';
+
 export const LOGOUT_USER = "LOGOUT_USER";
-export const SET_ERROR = "SET_AUTH_ERROR";
-export const SET_LOADING = "SET_AUTH_LOADING";
 
-export interface SetUserAction {
-  type: typeof SET_USER;
-  payload: User,
+export interface AuthStartAction { 
+  type: typeof AUTH_START; 
 };
-export interface SetErrorAction { 
-  type: typeof SET_ERROR,
-  payload: string|null,
+export interface AuthSuccessAction { 
+  type: typeof AUTH_SUCCESS;
+  payload: User;
 };
-export interface LogoutUserAction {
-  type: typeof LOGOUT_USER,
+export interface AuthFailAction { 
+  type: typeof AUTH_FAIL;
+  payload: string;
 };
-export interface SetLoadingAction {
-  type: typeof SET_LOADING;
-  payload: boolean,
+export interface LogoutAction {
+  type: typeof LOGOUT_USER; 
 };
 
-export type AuthActionTypes = SetUserAction | SetErrorAction | LogoutUserAction | SetLoadingAction; 
+export type AuthActionTypes = AuthStartAction | AuthSuccessAction | AuthFailAction | LogoutAction; 

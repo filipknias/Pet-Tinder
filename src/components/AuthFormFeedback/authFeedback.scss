@@ -1,0 +1,39 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.authFeedback {
+  @include flex(center, center);
+  background-color: $white;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: $block-box-shadow;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  .authFeedback__icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+  }
+  .authFeedback__content {
+    flex: 1;
+    .authFeedback__content__header {
+      font-size: 1.3rem;
+      color: $black;
+    }
+    .authFeedback__content__message {
+      font-size: 1rem;
+      color: $dark-gray;
+    }
+  }
+  &.authFeedback--success {
+    border-left: 5px solid $green;
+    .authFeedback__icon {
+      color: $green;
+    }
+  }
+  &.authFeedback--fail {
+    border-left: 5px solid $red;
+    .authFeedback__icon {
+      color: $red;
+    }
+  }
+}

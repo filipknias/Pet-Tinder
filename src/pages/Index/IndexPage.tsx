@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import "./indexPage.scss";
 import axios from "axios";
-import { Placement, Colors, StorageToken } from "../../utilities/types/globalTypes";
+import { Placement, Colors, StorageToken } from "../../types/globalTypes";
 import TinderCard from "../../components/TinderCard/TinderCard";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import ErrorScreen from "../../components/ErrorScreen/ErrorScreen";

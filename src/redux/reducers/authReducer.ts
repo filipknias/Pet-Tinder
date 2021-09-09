@@ -1,27 +1,46 @@
-import { AuthActionTypes, SET_USER, SET_ERROR, LOGOUT_USER, SET_LOADING } from "../types/authTypes";
-import User from "../../utilities/models/User";
+import { AuthActionTypes, LOGOUT_USER, AUTH_START, AUTH_SUCCESS, AUTH_FAIL } from "../types/authTypes";
+import User from "../../models/User";
+import { AuthFeedback } from "../../types/globalTypes";
 
 export interface AuthState {
   user: User|null;
   isAuth: boolean;
-  errorMessage: string|null;
+  authFeedback: AuthFeedback|null;
   loading: boolean;
 };
 
 const initialState: AuthState = {
   user: null,
   isAuth: false,
-  errorMessage: null,
+  authFeedback: null,
   loading: false,
 };
 
-const authReducer = (state: AuthState = initialState, action: AuthActionTypes) => {
+const authReducer = (state: AuthState = initialState, action: AuthActionTypes): AuthState => {
   switch (action.type) {
-    case SET_USER: {
+    case AUTH_START: {
+      return {
+        ...state,
+        loading: true,
+        authFeedback: null,
+      }
+    };
+    case AUTH_SUCCESS: {
       return {
         ...state,
         user: action.payload,
         isAuth: true,
+        loading: false,
+      }
+    };
+    case AUTH_FAIL: {
+      return {
+        ...state,
+        authFeedback: {
+          type: "fail",
+          message: action.payload
+        },
+        loading: false,
       }
     };
     case LOGOUT_USER: {
@@ -29,18 +48,7 @@ const authReducer = (state: AuthState = initialState, action: AuthActionTypes) =
         ...state,
         user: null,
         isAuth: false,
-      }
-    }
-    case SET_ERROR: {
-      return {
-        ...state,
-        errorMessage: action.payload
-      }
-    };
-    case SET_LOADING: {
-      return {
-        ...state,
-        loading: action.payload
+        authFeedback: null,
       }
     };
     default: {

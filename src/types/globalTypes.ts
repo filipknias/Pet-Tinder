@@ -22,3 +22,10 @@ export interface Token {
   expires_in: number;
   access_token: string;
 }
+
+export type AuthFeedbackType = "success" | "fail";
+
+export interface AuthFeedback {
+  type: AuthFeedbackType;
+  message: string;
+}

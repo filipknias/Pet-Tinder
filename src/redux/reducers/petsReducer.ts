@@ -1,5 +1,5 @@
-import { Pet, Pagination } from "../../utilities/types/apiTypes";
-import { StorageToken } from "../../utilities/types/globalTypes";
+import { Pet, Pagination } from "../../types/apiTypes";
+import { StorageToken } from "../../types/globalTypes";
 import { PetsActionTypes, SET_PETS, SET_PAGINATION, SET_TOKEN, SET_ERROR, SET_LOADING } from "../types/petsTypes";
 
 export interface PetsState {
@@ -18,7 +18,7 @@ const initialState: PetsState = {
   isError: false,
 };
 
-const petsReducer = (state: PetsState = initialState, action: PetsActionTypes) => {
+const petsReducer = (state: PetsState = initialState, action: PetsActionTypes): PetsState => {
   switch (action.type) {
     case SET_PETS: {
       return {

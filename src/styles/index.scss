@@ -25,6 +25,7 @@ a {
   @include flex(center, center, column);
   @media (max-width: $breakpoint-sm) {
     width: 100%;
+    height: 100vh;
     padding: 1rem 0.8rem;
   }
   .container__main {

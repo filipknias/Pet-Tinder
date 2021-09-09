@@ -80,7 +80,7 @@
       bottom: 0;
       transition: inherit;
       width: 100%;
-      padding: 1.5rem;
+      padding: 1.5rem 1rem;
       @media (max-width: $breakpoint-sm) {
         padding: 1rem;
       }
@@ -147,7 +147,7 @@
             padding: 0.6rem;
             transition: all 0.2s ease-in-out;
             &:hover {
-              background-color: $purple-hover;
+              background-color: $dark-purple;
             }
           }
         }

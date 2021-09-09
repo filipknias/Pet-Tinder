@@ -2,17 +2,16 @@ import React from 'react';
 import "./header.scss";
 import RoundedButton from "../RoundedButton/RoundedButton";
 import Tooltip from "../Tooltip/Tooltip";
-import { Colors } from "../../utilities/types/globalTypes";
+import { Colors } from "../../types/globalTypes";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faPaw, faHeart, faUserTimes, faUserCheck } from '@fortawesome/free-solid-svg-icons';
+import { faPaw, faHeart, faUserTimes, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import routes from "../../utilities/routes";
 import { RootState } from "../../redux/store";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Header: React.FC = () => {
-  const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
-  const dispatch = useDispatch();
+  const { isAuth } = useSelector((state: RootState) => state.authReducer);
 
   return (
     <div className="header">
@@ -40,7 +39,7 @@ const Header: React.FC = () => {
             </RoundedButton>
           </Tooltip>
           <Tooltip text={isAuth ? "Profile" : "Sign In"}>
-            <Link to={routes.signIn}>
+            <Link to={isAuth ? routes.profile : routes.signIn}>
               <RoundedButton 
                 color={isAuth ? Colors.green : Colors.red} 
                 style={{ fontSize: "1rem", padding: "0.8rem 0.7rem" }}

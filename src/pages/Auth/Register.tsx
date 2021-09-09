@@ -3,9 +3,10 @@ import "./auth.scss";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
+import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { Colors } from "../../utilities/types/globalTypes";
+import { Colors } from "../../types/globalTypes";
 import { Link } from "react-router-dom";
 import routes from "../../utilities/routes";
 import { registerUser } from "../../redux/actions/authActions";
@@ -30,7 +31,7 @@ const Register: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement|null>(null);
   const confirmPasswordRef = useRef<HTMLInputElement|null>(null);
   const dispatch = useDispatch();
-  const { errorMessage, loading } = useSelector((state: RootState) => state.authReducer);
+  const { authFeedback, loading } = useSelector((state: RootState) => state.authReducer);
   const history = useHistory();
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -46,14 +47,12 @@ const Register: React.FC = () => {
 
     dispatch(await registerUser(email, password, confirmPassword, history));
   };
-
+  
   return (
     <AuthForm formHeader="Register" formHeaderButton={SignInLinkButton}>
       <form className="form" onSubmit={onSubmit}>
-        {errorMessage && (
-          <div className="form__error">
-            <h3 className="form__error__message">{errorMessage}</h3>
-          </div>
+        {authFeedback && (
+          <AuthFeedback type={authFeedback.type} message={authFeedback.message} />
         )}
         <div className="form__formGroup">
           <label htmlFor="email" className="form__formGroup__label">E-mail</label>
@@ -89,7 +88,7 @@ const Register: React.FC = () => {
           />
         </div>
         <button type="submit" className="form__submit">
-          {loading ?  <FontAwesomeIcon icon={faSpinner} className="form__submit__spinner" /> : "Sign In"}
+          {loading ?  <FontAwesomeIcon icon={faSpinner} className="form__submit__spinner" /> : "Sign Up"}
         </button>
       </form>
     </AuthForm>

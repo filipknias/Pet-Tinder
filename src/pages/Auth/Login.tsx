@@ -1,16 +1,18 @@
 import React, { useRef } from 'react';
 import "./auth.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faUserPlus, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import Tooltip from "../../components/Tooltip/Tooltip";
+import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
+import AuthForm from "../../components/AuthForm/AuthForm";
 import { Colors } from "../../types/globalTypes";
 import { Link } from "react-router-dom";
-import AuthForm from "../../components/AuthForm/AuthForm";
 import routes from "../../utilities/routes";
 import { signInUser } from "../../redux/actions/authActions";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from 'react-router-dom';
+import { RootState } from "../../redux/store";
 
 const RegisterLinkButton: React.FC = () => {
   return (
@@ -29,6 +31,7 @@ const Login: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement|null>(null);
   const dispatch = useDispatch();
   const history = useHistory();
+  const { authFeedback, loading } = useSelector((state: RootState) => state.authReducer);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,21 +46,24 @@ const Login: React.FC = () => {
   return (
     <AuthForm formHeader="Sign In" formHeaderButton={RegisterLinkButton}>
       <form className="form" onSubmit={onSubmit}>
-          <div className="form__formGroup">
-            <label htmlFor="email" className="form__formGroup__label">E-mail</label>
-            <input type="email" id="email" ref={emailRef} className="form__formGroup__input" placeholder="example@yahoo.com" required />
-          </div>
-          <div className="form__formGroup">
-            <label htmlFor="password" className="form__formGroup__label">Password</label>
-            <input type="password" id="password" ref={passwordRef} className="form__formGroup__input" placeholder="********" required />
-            <Link to={routes.forgotPassword}>
-              <p className="form__formGroup__forgotPassword">Forgot Password ?</p>
-            </Link>
-          </div>
-          <button type="submit" className="form__submit">
-            Sign In
-          </button>
-        </form>
+        {authFeedback && (
+          <AuthFeedback type={authFeedback.type} message={authFeedback.message} />
+        )}
+        <div className="form__formGroup">
+          <label htmlFor="email" className="form__formGroup__label">E-mail</label>
+          <input type="email" id="email" ref={emailRef} className="form__formGroup__input" placeholder="example@yahoo.com" required />
+        </div>
+        <div className="form__formGroup">
+          <label htmlFor="password" className="form__formGroup__label">Password</label>
+          <input type="password" id="password" ref={passwordRef} className="form__formGroup__input" placeholder="********" required />
+          <Link to={routes.forgotPassword}>
+            <p className="form__formGroup__forgotPassword">Forgot Password ?</p>
+          </Link>
+        </div>
+        <button type="submit" className="form__submit">
+          { loading ?  <FontAwesomeIcon icon={faSpinner} className="form__submit__spinner" /> : "Sign In"}
+        </button>
+      </form>
     </AuthForm>
   )
 };

@@ -1,31 +1,52 @@
 import { Pet, Pagination } from "../../types/apiTypes";
 import { StorageToken } from "../../types/globalTypes";
 
-export const SET_PETS = "SET_PETS";
-export const SET_PAGINATION = "SET_PAGINATION";
-export const SET_TOKEN = "SET_TOKEN";
-export const SET_LOADING = "SET_PETS_LOADING";
-export const SET_ERROR = "SET_PETS_ERROR";
- 
-export interface SetPetsAction { 
-  type: typeof SET_PETS,
-  payload: Pet[],
-};
-export interface SetPaginationAction { 
-  type: typeof SET_PAGINATION,
-  payload: Pagination|null,
-};
-export interface SetTokenAction { 
-  type: typeof SET_TOKEN,
-  payload: StorageToken,
-};
-export interface SetLoadingAction { 
-  type: typeof SET_LOADING,
-  payload: boolean,
-};
-export interface SetErrorAction { 
-  type: typeof SET_ERROR,
-  payload: boolean,
+export const PETS_START = "PETS_START";
+export const PETS_SUCCESS = "PETS_SUCCESS";
+export const PETS_FAIL = "PETS_FAIL";
+
+export const TOKEN_START = "TOKEN_START";
+export const TOKEN_SUCCESS = "TOKEN_SUCCESS";
+export const TOKEN_FAIL = "TOKEN_FAIL";
+
+export const NEXT_PAGE = "NEXT_PAGE";
+
+interface PetsApiResponse {
+  pets: Pet[],
+  pagination: Pagination,
 };
 
-export type PetsActionTypes = SetPetsAction | SetPaginationAction | SetTokenAction | SetLoadingAction | SetErrorAction; 
+export interface PetsStartAction {
+  type: typeof PETS_START,
+};
+export interface PetsSuccessAction {
+  type: typeof PETS_SUCCESS,
+  payload: PetsApiResponse,
+};
+export interface PetsFailAction { 
+  type: typeof PETS_FAIL, 
+};
+
+export interface TokenStartAction {
+  type: typeof TOKEN_START,
+};
+export interface TokenSuccessAction {
+  type: typeof TOKEN_SUCCESS,
+  payload: StorageToken,
+};
+export interface TokenFailAction {
+  type: typeof TOKEN_FAIL,
+};
+export interface NextPageAction {
+  type: typeof NEXT_PAGE,
+  payload: number,
+}
+
+export type PetsActionTypes = 
+            PetsStartAction | 
+            PetsSuccessAction | 
+            PetsFailAction | 
+            TokenStartAction | 
+            TokenSuccessAction | 
+            TokenFailAction |
+            NextPageAction;

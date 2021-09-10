@@ -1,6 +1,6 @@
 import { Pet, Pagination } from "../../types/apiTypes";
 import { StorageToken } from "../../types/globalTypes";
-import { PetsActionTypes, SET_PETS, SET_PAGINATION, SET_TOKEN, SET_ERROR, SET_LOADING } from "../types/petsTypes";
+import * as petsTypes from "../types/petsTypes";
 
 export interface PetsState {
   pets: Pet[];
@@ -18,36 +18,56 @@ const initialState: PetsState = {
   isError: false,
 };
 
-const petsReducer = (state: PetsState = initialState, action: PetsActionTypes): PetsState => {
+const petsReducer = (state: PetsState = initialState, action: petsTypes.PetsActionTypes): PetsState => {
   switch (action.type) {
-    case SET_PETS: {
+    case petsTypes.PETS_START: {
       return {
         ...state,
-        pets: action.payload
+        loading: true,
+        isError: false,
       }
     };
-    case SET_PAGINATION: {
+    case petsTypes.PETS_SUCCESS: {
       return {
         ...state,
-        pagination: action.payload
+        pets: action.payload.pets,
+        pagination: action.payload.pagination,
+        loading: false,
       }
     };
-    case SET_TOKEN: {
+    case petsTypes.PETS_FAIL: {
       return {
         ...state,
-        token: action.payload
+        loading: false,
+        isError: true,
       }
     };
-    case SET_ERROR: {
+    case petsTypes.TOKEN_START: {
       return {
         ...state,
-        isError: action.payload
+        loading: true,
+        isError: false,
+      }
+    }; 
+    case petsTypes.TOKEN_SUCCESS: {
+      return {
+        ...state,
+        token: action.payload,
+        loading: false,
       }
     };
-    case SET_LOADING: {
+    case petsTypes.TOKEN_FAIL: {
       return {
         ...state,
-        loading: action.payload
+        loading: false,
+        isError: true,
+      }
+    };  
+    case petsTypes.NEXT_PAGE: {
+      if (state.pagination === null) return state;
+      return {
+        ...state,
+        pagination: { ...state.pagination, current_page: action.payload },
       }
     };
     default: {

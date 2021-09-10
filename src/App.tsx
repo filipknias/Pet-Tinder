@@ -36,7 +36,7 @@ const App: React.FC = () => {
           email: user.email,
           displayName: user.displayName,
           verified: user.verified,
-          created_at: user.created_at,
+          member_since: user.member_since,
         };
         store.dispatch({
           type: AUTH_SUCCESS,

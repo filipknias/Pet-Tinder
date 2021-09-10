@@ -13,6 +13,26 @@ const formatDisplayName = (email: string): string => {
   return email.split("@")[0];
 };
 
+const formatErrorMessage = (errorCode: string): string => {
+  switch (errorCode) {
+    case "auth/email-already-in-use" || "auth/email-already-exists": {
+      return "Email already in use";
+    };
+    case "auth/weak-password" || "auth/invalid-password": {
+      return "Password is too weak";
+    };
+    case "auth/invalid-email" : {
+      return "E-mail must be valid";
+    };
+    case "auth/wrong-password" || "auth/user-not-found": {
+      return "Wrong e-mail or password"
+    };
+    default: {
+      return "Something went wrong";
+    };
+  };
+};
+
 export const registerUser = (email: string, password: string, confirmPassword: string, history: History) => async (dispatch: Dispatch<AuthActionTypes>) => {
   try {
     if (password !== confirmPassword) {
@@ -32,7 +52,7 @@ export const registerUser = (email: string, password: string, confirmPassword: s
       email,
       displayName,
       verified: false,
-      created_at: timestamp,
+      member_since: timestamp,
     };
     // Add user to firestore
     await addDoc(collection(firestore, "users"), userObject);
@@ -45,24 +65,9 @@ export const registerUser = (email: string, password: string, confirmPassword: s
     history.push(routes.index);
     // TODO: send email verification
   } catch (err: any) {
-    let errorMessage = null;
-    switch (err.code) {
-      case "auth/email-already-in-use" || "auth/email-already-exists": {
-        errorMessage = "Email already in use";
-        break;
-      };
-      case "auth/weak-password": {
-        errorMessage = "Password is too weak";
-        break;
-      };
-      case "auth/invalid-email" : {
-        errorMessage = "E-mail must be valid";
-        break;
-      }
-    };
     dispatch({
       type: AUTH_FAIL,
-      payload: errorMessage || err.message,
+      payload: formatErrorMessage(err.code)
     });
   }
 };
@@ -82,7 +87,7 @@ export const signInUser = (email: string, password: string, history: History) =>
           email: user.email,
           displayName: user.displayName,
           verified: user.verified,
-          created_at: user.created_at,
+          member_since: user.created_at,
         };
         dispatch({
           type: AUTH_SUCCESS,
@@ -94,7 +99,7 @@ export const signInUser = (email: string, password: string, history: History) =>
   } catch (err: any) {
     dispatch({
       type: AUTH_FAIL,
-      payload: err.message,
+      payload: formatErrorMessage(err.code),
     });
   }
 };

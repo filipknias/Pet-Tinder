@@ -6,5 +6,5 @@ export default interface User {
   email: string;
   displayName: string;
   verified: boolean;
-  created_at: Timestamp;
+  member_since: Timestamp;
 }

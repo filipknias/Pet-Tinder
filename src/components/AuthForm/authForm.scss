@@ -34,14 +34,9 @@
     }
   }
   .authForm__main {
-    padding: 2rem 1.5rem; 
+    padding: 1.2rem; 
     @media (max-width: $breakpoint-sm) {
-      padding: 2rem 0.8rem;
-    }
-    .authForm__main__buttonsContainer {
-      @include flex(center, center);
-      gap: 1rem;
-      margin-top: 1.5rem;
+      padding: 1.8rem 0.8rem;
     }
   }
 }

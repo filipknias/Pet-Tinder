@@ -8,7 +8,6 @@ $white: #fff;
 $black: #000;
 $yellow: #FDD373;
 $gray: rgba(0, 0, 0, 0.1);
-$btn-box-shadow: 5px 5px 15px -11px #000000;
 $tooltip-bg: rgba(0, 0, 0, 0.8);
 $tinderCard-overlay-bg: rgba(0, 0, 0, 0.6);
 $dark-blue: #4285F4;
@@ -16,9 +15,14 @@ $dark-blue-hover: #366fcc;
 $dark-green: #25be95;
 $dark-purple: #9a4ed4;
 $light-red: #ff6c7f;
+$dark-red: #cf2d43;
+$dark-red-hover: #b31e32;
 $dark-purple: #8f4fc0;
-$block-box-shadow: 5px 5px 15px -12px #000000;
 $dark-gray: #1b1b1b;
+
+/* BOX SHADOW */
+$block-box-shadow: 5px 5px 15px -12px #000000;
+$btn-box-shadow: 5px 5px 15px -10px #000000;
 
 /* FONTS */
 @import url('https://fonts.googleapis.com/css2?family=Didact+Gothic&display=swap');

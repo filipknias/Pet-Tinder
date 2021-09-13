@@ -13,6 +13,8 @@ import { registerUser } from "../../redux/actions/authActions";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useHistory } from "react-router-dom";
+import googleIcon from "../../assets/googleIcon.svg";
+import facebookIcon from "../../assets/facebookIcon.svg";
 
 const SignInLinkButton: React.FC = () => {
   return (
@@ -36,6 +38,8 @@ const Register: React.FC = () => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+
     if (emailRef.current === null || 
         passwordRef.current === null || 
         confirmPasswordRef.current === null
@@ -49,7 +53,7 @@ const Register: React.FC = () => {
   };
   
   return (
-    <AuthForm formHeader="Register" formHeaderButton={SignInLinkButton}>
+    <AuthForm header="Register" button={SignInLinkButton}>
       <form className="form" onSubmit={onSubmit}>
         {authFeedback && (
           <AuthFeedback type={authFeedback.type} message={authFeedback.message} />
@@ -90,6 +94,18 @@ const Register: React.FC = () => {
         <button type="submit" className="form__submit">
           {loading ?  <FontAwesomeIcon icon={faSpinner} className="form__submit__spinner" /> : "Sign Up"}
         </button>
+        <div className="form__providersContainer">
+          <Tooltip text="Google">
+            <RoundedButton color={Colors.white} style={{ padding: "1.2rem" }} >
+                <img src={googleIcon} alt="Google" width={30}  />
+            </RoundedButton>
+          </Tooltip>
+          <Tooltip text="Facebook">
+            <RoundedButton color={Colors.white} style={{ padding: "1.2rem" }}>
+                <img src={facebookIcon} alt="Facebook" width={30} />
+            </RoundedButton>
+          </Tooltip>
+        </div>
       </form>
     </AuthForm>
   )

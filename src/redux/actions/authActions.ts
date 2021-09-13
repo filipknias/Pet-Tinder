@@ -65,6 +65,7 @@ export const registerUser = (email: string, password: string, confirmPassword: s
     history.push(routes.index);
     // TODO: send email verification
   } catch (err: any) {
+    console.log(err.code);
     dispatch({
       type: AUTH_FAIL,
       payload: formatErrorMessage(err.code)
@@ -97,6 +98,7 @@ export const signInUser = (email: string, password: string, history: History) =>
       }
     });
   } catch (err: any) {
+    console.log(err.code);
     dispatch({
       type: AUTH_FAIL,
       payload: formatErrorMessage(err.code),

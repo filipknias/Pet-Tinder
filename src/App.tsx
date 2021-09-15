@@ -55,7 +55,11 @@ const App: React.FC = () => {
         setIsAuth(false);
       }
     });
-  }, []); 
+  }, []);
+  
+  useEffect(() => {
+    console.log(auth.currentUser?.emailVerified);
+  }, [auth.currentUser?.emailVerified]);
 
   return (
     <Provider store={store}>

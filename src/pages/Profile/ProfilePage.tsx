@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import "./profilePage.scss";
-import { logoutUser } from "../../redux/actions/authActions";
+import { logoutUser, sendVerificationEmail } from "../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faEnvelope, faUserCog, faUnlockAlt, faChevronRight, faUserSlash } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faEnvelope, faUserCog, faUnlockAlt, faChevronRight, faUserSlash, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { Colors } from "../../types/globalTypes";
 import { RootState } from "../../redux/store";
+import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
+import * as authTypes from "../../redux/types/authTypes";
 
 const LogoutButton: React.FC = () => {
   const dispatch = useDispatch();
@@ -26,16 +28,37 @@ const LogoutButton: React.FC = () => {
 };
 
 const ProfilePage: React.FC = () => {
+  const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.authReducer);
+  const { verifyUser } = useSelector((state: RootState) => state.authReducer);
   const listItemButtonStyle = {
     fontSize: "1.5rem", 
     padding: "0.9rem 1.2rem",
   };
+  const listItemLoadingStyle = {
+    padding: "1rem",
+    fontSize: "1.5rem",
+    cursor: "default",
+  };
+
+  useEffect(() => {
+    dispatch({ type: authTypes.CLEAR_OUT });
+  }, []);
+
+  useEffect(() => {
+    if (verifyUser.loading) {
+      setButtonsDisabled(true);
+    } else {
+      setButtonsDisabled(false);
+    }
+  }, [verifyUser.loading]);
 
   return (
     <AuthForm header="Profile" button={LogoutButton}>
       <div className="profileContainer">
+        {verifyUser.feedback && (
+          <AuthFeedback type={verifyUser.feedback.type} message={verifyUser.feedback.message} />
+        )}
         <ul className="profileContainer__list">
           <li className="profileContainer__list__item">
             <div className="profileContainer__list__item__container">
@@ -46,8 +69,18 @@ const ProfilePage: React.FC = () => {
               <h3 className="profileContainer__list__item__container__title">Profile verifiaction</h3>
             </div>
             <Tooltip text="E-mail verification">
-              <RoundedButton color={Colors.blue} style={listItemButtonStyle}>
-                <FontAwesomeIcon icon={faChevronRight} />
+              <RoundedButton 
+                color={Colors.blue} 
+                style={verifyUser.loading ? listItemLoadingStyle : listItemButtonStyle} 
+                onClick={buttonsDisabled ? undefined : () => dispatch(sendVerificationEmail())}
+              >
+                <>
+                  {verifyUser.loading ? (
+                    <FontAwesomeIcon className="profileContainer__list__item__loadingIcon" icon={faSpinner} />
+                  ) : (
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  )}
+                </>
               </RoundedButton>
             </Tooltip>
           </li>
@@ -85,7 +118,7 @@ const ProfilePage: React.FC = () => {
             <FontAwesomeIcon className="profileContainer__buttonsContainer__button__icon" icon={faUserSlash} />
             Delete profile
           </button>
-          <button className="profileContainer__buttonsContainer__button button--logout">
+          <button className="profileContainer__buttonsContainer__button button--logout" onClick={() => dispatch(logoutUser())}>
             <FontAwesomeIcon className="profileContainer__buttonsContainer__button__icon" icon={faSignOutAlt} />
             Logout
           </button>

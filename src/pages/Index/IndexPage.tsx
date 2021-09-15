@@ -15,7 +15,7 @@ import { TOKEN_SUCCESS, NEXT_PAGE } from "../../redux/types/petsTypes";
 import { formatToken } from "../../utilities/helpers";
 import { RootState } from "../../redux/store";
 
-const isTokenExpired = (token: StorageToken): boolean => {;
+const isTokenExpired = (token: StorageToken): boolean => {
   if (Date.now() > token.expiration_time) return true;
   else return false;
 }
@@ -31,6 +31,7 @@ const IndexPage: React.FC = () => {
   // TODO: unscubscribe to axios requst in () => useEffect function
 
   useEffect(() => { 
+    if (token) return;
     // Check if token is in localstorage
     const savedToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
     if (savedToken) {
@@ -141,7 +142,10 @@ const IndexPage: React.FC = () => {
   const handleRefresh = async () => {
     if (loading) return;
     setButtonsDisabled(true);
-    dispatch(await getPets());
+    if (token !== null && isTokenExpired(token)) {
+      dispatch(getToken());
+    }
+    dispatch(getPets());
     setCurrentPetIndex(0);
     setButtonsDisabled(false);
   };

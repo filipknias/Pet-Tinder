@@ -8,6 +8,9 @@
       @include flex(center, center);
       padding: 0.8rem 0.5rem;
       width: 100%;
+      .profileContainer__list__item__loadingIcon {
+        @include loadingSpinnerRotate;
+      }
       @media (max-width: $breakpoint-sm) {
         padding: 1rem;
       }

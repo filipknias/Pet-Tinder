@@ -1,11 +1,10 @@
-import { AUTH_START, AUTH_SUCCESS, AUTH_FAIL, LOGOUT_USER } from "../types/authTypes";
+import * as authTypes from "../types/authTypes";
 import User from "../../models/User";
-import { createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore"; 
 import { auth, firestore, timestamp } from "../../utilities/firebase";
 import { useHistory } from "react-router-dom";
 import { Dispatch } from "redux";
-import { AuthActionTypes } from "../../redux/types/authTypes";
 import routes from "../../utilities/routes";
 type History = ReturnType<typeof useHistory>;
 
@@ -33,16 +32,16 @@ const formatErrorMessage = (errorCode: string): string => {
   };
 };
 
-export const registerUser = (email: string, password: string, confirmPassword: string, history: History) => async (dispatch: Dispatch<AuthActionTypes>) => {
+export const registerUser = (email: string, password: string, confirmPassword: string, history: History) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
   try {
     if (password !== confirmPassword) {
       return dispatch({
-        type: AUTH_FAIL,
+        type: authTypes.AUTH_FAIL,
         payload: "Passwords must be the same",
       });
     }
 
-    dispatch({ type: AUTH_START });
+    dispatch({ type: authTypes.AUTH_START });
 
     const { user } = await createUserWithEmailAndPassword(auth, email, password);
     const displayName = formatDisplayName(email);
@@ -51,31 +50,39 @@ export const registerUser = (email: string, password: string, confirmPassword: s
       uid: user.uid,
       email,
       displayName,
-      verified: false,
+      verified: auth.currentUser?.emailVerified || false,
       member_since: timestamp,
     };
     // Add user to firestore
     await addDoc(collection(firestore, "users"), userObject);
     // Set user in state
     dispatch({
-      type: AUTH_SUCCESS,
+      type: authTypes.AUTH_SUCCESS,
       payload: userObject,
     });
     // Redirect to index page
     history.push(routes.index);
-    // TODO: send email verification
+    
+    // Send email verification
+    // TODO: not working
+    if (auth.currentUser) {
+      console.log(auth.currentUser);
+    } else {
+      console.log("no user");
+    }
+    sendVerificationEmail();
   } catch (err: any) {
     console.log(err.code);
     dispatch({
-      type: AUTH_FAIL,
+      type: authTypes.AUTH_FAIL,
       payload: formatErrorMessage(err.code)
     });
   }
 };
 
-export const signInUser = (email: string, password: string, history: History) => async (dispatch: Dispatch<AuthActionTypes>) => {
+export const signInUser = (email: string, password: string, history: History) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
   try {
-    dispatch({ type: AUTH_START });
+    dispatch({ type: authTypes.AUTH_START });
     const { user } = await signInWithEmailAndPassword(auth, email, password);
     const docRef = collection(firestore, "users");
     const q = query(docRef, where("uid", "==", user.uid));  
@@ -91,7 +98,7 @@ export const signInUser = (email: string, password: string, history: History) =>
           member_since: user.created_at,
         };
         dispatch({
-          type: AUTH_SUCCESS,
+          type: authTypes.AUTH_SUCCESS,
           payload: userObject
         });
         history.push(routes.index);
@@ -100,13 +107,32 @@ export const signInUser = (email: string, password: string, history: History) =>
   } catch (err: any) {
     console.log(err.code);
     dispatch({
-      type: AUTH_FAIL,
+      type: authTypes.AUTH_FAIL,
       payload: formatErrorMessage(err.code),
     });
   }
 };
 
-export const logoutUser = () => async (dispatch: Dispatch<AuthActionTypes>) => {
+export const logoutUser = () => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+  // TODO: set logout loading and error
   await signOut(auth);
-  dispatch({ type: LOGOUT_USER });
+  dispatch({ type: authTypes.LOGOUT_USER });
+};
+
+export const sendVerificationEmail = () => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+  try {
+    if (auth.currentUser === null) return;
+    dispatch({ type: authTypes.VERIFY_START });
+    await sendEmailVerification(auth.currentUser);
+    dispatch({ 
+      type: authTypes.VERIFY_SUCCESS,
+      payload: "E-mail verification has been sent", 
+    });
+  } catch (err: any) {
+    console.log(err.code);
+    dispatch({
+      type: authTypes.VERIFY_FAIL,
+      payload: formatErrorMessage(err.code)
+    });
+  }
 };

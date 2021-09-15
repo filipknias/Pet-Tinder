@@ -1,12 +1,18 @@
-import { AuthActionTypes, LOGOUT_USER, AUTH_START, AUTH_SUCCESS, AUTH_FAIL } from "../types/authTypes";
+import * as authTypes from "../types/authTypes";
 import User from "../../models/User";
 import { AuthFeedback } from "../../types/globalTypes";
+
+interface VerifyUser {
+  feedback: AuthFeedback|null;
+  loading: boolean;
+};
 
 export interface AuthState {
   user: User|null;
   isAuth: boolean;
   authFeedback: AuthFeedback|null;
   loading: boolean;
+  verifyUser: VerifyUser;
 };
 
 const initialState: AuthState = {
@@ -14,18 +20,22 @@ const initialState: AuthState = {
   isAuth: false,
   authFeedback: null,
   loading: false,
+  verifyUser: {
+    feedback: null,
+    loading: false,
+  },
 };
 
-const authReducer = (state: AuthState = initialState, action: AuthActionTypes): AuthState => {
+const authReducer = (state: AuthState = initialState, action: authTypes.AuthActionTypes): AuthState => {
   switch (action.type) {
-    case AUTH_START: {
+    case authTypes.AUTH_START: {
       return {
         ...state,
         loading: true,
         authFeedback: null,
       }
     };
-    case AUTH_SUCCESS: {
+    case authTypes.AUTH_SUCCESS: {
       return {
         ...state,
         user: action.payload,
@@ -33,7 +43,7 @@ const authReducer = (state: AuthState = initialState, action: AuthActionTypes): 
         loading: false,
       }
     };
-    case AUTH_FAIL: {
+    case authTypes.AUTH_FAIL: {
       return {
         ...state,
         authFeedback: {
@@ -43,12 +53,55 @@ const authReducer = (state: AuthState = initialState, action: AuthActionTypes): 
         loading: false,
       }
     };
-    case LOGOUT_USER: {
+    case authTypes.VERIFY_START: {
+      return {
+        ...state,
+        verifyUser: {
+          feedback: null,
+          loading: true,
+        },  
+      }
+    };
+    case authTypes.VERIFY_SUCCESS: {
+      return {
+        ...state,
+        verifyUser: {
+          feedback: {
+            type: "success",
+            message: action.payload,
+          },
+          loading: false,
+        },  
+      }
+    };
+    case authTypes.VERIFY_FAIL: {
+      return {
+        ...state,
+        verifyUser: {
+          feedback: {
+            type: "fail",
+            message: action.payload,
+          },
+          loading: false,
+        },  
+      }
+    };
+    case authTypes.LOGOUT_USER: {
       return {
         ...state,
         user: null,
         isAuth: false,
         authFeedback: null,
+      }
+    };
+    case authTypes.CLEAR_OUT: {
+      return {
+        ...state,
+        authFeedback: null,
+        verifyUser: {
+          ...state.verifyUser,
+          feedback: null,
+        }
       }
     };
     default: {

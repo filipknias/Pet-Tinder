@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./indexPage.scss";
-import axios from "axios";
-import { Placement, Colors, StorageToken } from "../../types/globalTypes";
+import { Placement, Colors } from "../../types/globalTypes";
 import TinderCard from "../../components/TinderCard/TinderCard";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import ErrorScreen from "../../components/ErrorScreen/ErrorScreen";
@@ -11,54 +10,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faTimesCircle, faRedo, faSortAmountUp } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from "react-redux";
 import { getToken, getPets } from "../../redux/actions/petsActions";
-import { TOKEN_SUCCESS, NEXT_PAGE } from "../../redux/types/petsTypes";
-import { formatToken } from "../../utilities/helpers";
+import { NEXT_PAGE } from "../../redux/types/petsTypes";
 import { RootState } from "../../redux/store";
-
-const isTokenExpired = (token: StorageToken): boolean => {
-  if (Date.now() > token.expiration_time) return true;
-  else return false;
-}
+import { isTokenExpired } from '../../utilities/helpers';
 
 const IndexPage: React.FC = () => {
   const [currentPetIndex, setCurrentPetIndex] = useState<number>(0);
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
   const cardRef = React.createRef<HTMLDivElement>();
   const { pets, pagination, token, isError, loading } = useSelector((state: RootState) => state.petsReducer);
+  const { user } = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch();
-  const LOCAL_STORAGE_TOKEN_KEY = "PET_TINDER_TOKEN";
-
-  // TODO: unscubscribe to axios requst in () => useEffect function
-
-  useEffect(() => { 
-    if (token) return;
-    // Check if token is in localstorage
-    const savedToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
-    if (savedToken) {
-      // Check if token expired, if so get new one
-      const parsedToken = JSON.parse(savedToken);
-      if (isTokenExpired(parsedToken)) {
-        dispatch(getToken());
-      } else {
-        dispatch({ type: TOKEN_SUCCESS, payload: parsedToken });
-      }
-    } else {
-      dispatch(getToken());
-    }
-  }, []);
+  const roundedButtonStyle = {
+    fontSize: "2.2rem", 
+    padding: "1rem",
+  };
 
   useEffect(() => {
     if (token === null) return;
-    const storageToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
-    if (!storageToken) {
-      // Set new token in localstorage if there is no one
-      const newToken: StorageToken = formatToken(token);
-      localStorage.setItem(LOCAL_STORAGE_TOKEN_KEY, JSON.stringify(newToken));
-    }
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token.access_token}`;
-    // Get pets when token changes
+    // Get pets when token is set
     dispatch(getPets());
   }, [token]);
+
 
   useEffect(() => {
     if (pagination === null) return;
@@ -84,13 +57,13 @@ const IndexPage: React.FC = () => {
     }
   };
 
-  const isNextPage = (): boolean => {
+  const hasNextPage = (): boolean => {
     if (currentPetIndex + 1 === pagination?.count_per_page) return true;
     else return false;
   }
 
   const handleAsyncButtonClick = (asyncCallback: () => void) => {
-
+    
   }
 
   const setNextPage = (): void => {
@@ -115,7 +88,7 @@ const IndexPage: React.FC = () => {
     makeCardAnimation(() => {
       // TODO: save in DB
       // Check for next page
-      if (isNextPage()) {
+      if (hasNextPage()) {
         setNextPage();
       } else {
         setCurrentPetIndex((prevIndex) => prevIndex + 1);
@@ -130,7 +103,7 @@ const IndexPage: React.FC = () => {
       makeCardAnimation(() => {
         // TODO: save in DB
         // Check for next page
-        if (isNextPage()) {
+        if (hasNextPage()) {
           setNextPage();
         } else {
           setCurrentPetIndex((prevIndex) => prevIndex + 1);
@@ -171,7 +144,7 @@ const IndexPage: React.FC = () => {
           <Tooltip text="Reload" placement={Placement.top}>
             <RoundedButton 
               color={Colors.yellow} 
-              style={{ fontSize: "2.2rem", padding: "1rem" }} 
+              style={roundedButtonStyle} 
               onClick={handleRefresh}
             >
               <FontAwesomeIcon icon={faRedo} />
@@ -180,7 +153,7 @@ const IndexPage: React.FC = () => {
           <Tooltip text="Dislike" placement={Placement.top}>
             <RoundedButton 
               color={Colors.red} 
-              style={{ fontSize: "2.2rem", padding: "1rem" }} 
+              style={roundedButtonStyle} 
               onClick={buttonsDisabled ? undefined : handleDislikeClick}
             >
               <FontAwesomeIcon icon={faTimesCircle} />
@@ -189,7 +162,7 @@ const IndexPage: React.FC = () => {
           <Tooltip text="Like" placement={Placement.top}>
             <RoundedButton 
               color={Colors.green}  
-              style={{ fontSize: "2.2rem", padding: "1rem" }} 
+              style={roundedButtonStyle} 
               onClick={buttonsDisabled ? undefined : handleLikeClick}
             >
               <FontAwesomeIcon icon={faHeart} />
@@ -198,8 +171,7 @@ const IndexPage: React.FC = () => {
           <Tooltip text="Filter" placement={Placement.top}>
             <RoundedButton 
               color={Colors.purple} 
-              style={{ fontSize: "2.2rem", 
-              padding: "1rem" }}
+              style={roundedButtonStyle}
             >
               <FontAwesomeIcon icon={faSortAmountUp} />
             </RoundedButton>

@@ -1,12 +1,13 @@
 import * as authTypes from "../types/authTypes";
 import User from "../../models/User";
 import { createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore"; 
+import { collection, addDoc, query, where, getDocs, updateDoc, doc } from "firebase/firestore"; 
 import { auth, firestore, timestamp } from "../../utilities/firebase";
 import { useHistory } from "react-router-dom";
 import { Dispatch } from "redux";
 import routes from "../../utilities/routes";
 type History = ReturnType<typeof useHistory>;
+type CurrentUser = typeof auth.currentUser;
 
 const formatDisplayName = (email: string): string => {
   return email.split("@")[0];
@@ -64,13 +65,8 @@ export const registerUser = (email: string, password: string, confirmPassword: s
     history.push(routes.index);
     
     // Send email verification
-    // TODO: not working
-    if (auth.currentUser) {
-      console.log(auth.currentUser);
-    } else {
-      console.log("no user");
-    }
-    sendVerificationEmail();
+    await sendEmailVerification(user);
+    // TODO: Show popup message with email verification has been send
   } catch (err: any) {
     console.log(err.code);
     dispatch({
@@ -119,11 +115,11 @@ export const logoutUser = () => async (dispatch: Dispatch<authTypes.AuthActionTy
   dispatch({ type: authTypes.LOGOUT_USER });
 };
 
-export const sendVerificationEmail = () => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+export const sendVerificationEmail = (user: CurrentUser) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
   try {
-    if (auth.currentUser === null) return;
+    if (user === null) return;
     dispatch({ type: authTypes.VERIFY_START });
-    await sendEmailVerification(auth.currentUser);
+    await sendEmailVerification(user);
     dispatch({ 
       type: authTypes.VERIFY_SUCCESS,
       payload: "E-mail verification has been sent", 
@@ -136,3 +132,27 @@ export const sendVerificationEmail = () => async (dispatch: Dispatch<authTypes.A
     });
   }
 };
+
+export const verifyUser = (user: User) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+  dispatch({
+    type: authTypes.UPDATE_USER,
+    payload: {
+      ...user,
+      verified: true,
+    }
+  });
+  try {
+    const usersRef = collection(firestore, "users");
+    const q = query(usersRef, where("uid", "==", user.uid));  
+    const querySnap = await getDocs(q);
+    querySnap.forEach(async (doc) => {
+      if (doc.exists()) {
+        await updateDoc(doc.ref, {
+          verified: true,
+        });
+      }
+    });
+  } catch (err: any) {
+    console.log(err);
+  }
+};  

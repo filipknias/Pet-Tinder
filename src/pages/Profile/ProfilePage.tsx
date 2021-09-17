@@ -11,6 +11,7 @@ import { Colors } from "../../types/globalTypes";
 import { RootState } from "../../redux/store";
 import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
 import * as authTypes from "../../redux/types/authTypes";
+import { auth } from "../../utilities/firebase";
 
 const LogoutButton: React.FC = () => {
   const dispatch = useDispatch();
@@ -72,7 +73,7 @@ const ProfilePage: React.FC = () => {
               <RoundedButton 
                 color={Colors.blue} 
                 style={verifyUser.loading ? listItemLoadingStyle : listItemButtonStyle} 
-                onClick={buttonsDisabled ? undefined : () => dispatch(sendVerificationEmail())}
+                onClick={buttonsDisabled ? undefined : () => dispatch(sendVerificationEmail(auth.currentUser))}
               >
                 <>
                   {verifyUser.loading ? (

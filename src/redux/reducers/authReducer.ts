@@ -94,6 +94,12 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
         authFeedback: null,
       }
     };
+    case authTypes.UPDATE_USER: {
+      return {
+        ...state,
+        user: { ...action.payload },
+      }
+    };
     case authTypes.CLEAR_OUT: {
       return {
         ...state,

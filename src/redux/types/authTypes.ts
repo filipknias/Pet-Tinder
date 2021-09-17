@@ -14,6 +14,7 @@ export const RESET_PASSWORD_FAIL = "RESET_PASSWORD_FAIL";
 
 export const LOGOUT_USER = "LOGOUT_USER";
 export const CLEAR_OUT = "CLEAR_OUT";
+export const UPDATE_USER = "UPDATE_USER";
 
 export interface AuthStartAction { 
   type: typeof AUTH_START; 
@@ -46,6 +47,10 @@ export interface LogoutAction {
 export interface ClearOutAction {
   type: typeof CLEAR_OUT; 
 };
+export interface UpdateUserAction {
+  type: typeof UPDATE_USER; 
+  payload: User;
+};
 
 export type AuthActionTypes = 
                             AuthStartAction | 
@@ -55,4 +60,5 @@ export type AuthActionTypes =
                             VerifyStartAction |
                             VerifySuccessAction |
                             VerifyFailAction |
-                            ClearOutAction; 
+                            ClearOutAction |
+                            UpdateUserAction; 

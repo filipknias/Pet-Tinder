@@ -6,14 +6,17 @@ import {
   signInWithEmailAndPassword, 
   sendEmailVerification,
   sendPasswordResetEmail, 
+  updateProfile,
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider
 } from "firebase/auth";
-import { collection, addDoc, query, where, getDocs, updateDoc, doc } from "firebase/firestore"; 
+import { collection, addDoc, query, where, getDocs, updateDoc } from "firebase/firestore"; 
 import { auth, firestore, timestamp } from "../../utilities/firebase";
 import { useHistory } from "react-router-dom";
 import { Dispatch } from "redux";
 import routes from "../../utilities/routes";
 type History = ReturnType<typeof useHistory>;
-type CurrentUser = typeof auth.currentUser;
 
 const formatDisplayName = (email: string): string => {
   return email.split("@")[0];
@@ -32,6 +35,9 @@ const formatErrorMessage = (errorCode: string): string => {
     };
     case "auth/wrong-password" || "auth/user-not-found": {
       return "Wrong e-mail or password"
+    };
+    case "auth/user-mismatch": {
+      return "Wrong user credentials";
     };
     default: {
       return "Something went wrong";
@@ -121,11 +127,11 @@ export const logoutUser = () => async (dispatch: Dispatch<authTypes.AuthActionTy
   dispatch({ type: authTypes.LOGOUT_USER });
 };
 
-export const sendVerificationEmail = (user: CurrentUser) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+export const sendVerificationEmail = () => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
   try {
-    if (user === null) return;
+    if (auth.currentUser === null) return;
     dispatch({ type: authTypes.VERIFY_START });
-    await sendEmailVerification(user);
+    await sendEmailVerification(auth.currentUser);
     dispatch({ 
       type: authTypes.VERIFY_SUCCESS,
       payload: "E-mail verification has been sent", 
@@ -140,13 +146,7 @@ export const sendVerificationEmail = (user: CurrentUser) => async (dispatch: Dis
 };
 
 export const verifyUser = (user: User) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
-  dispatch({
-    type: authTypes.UPDATE_USER,
-    payload: {
-      ...user,
-      verified: true,
-    }
-  });
+  dispatch({ type: authTypes.MARK_USER_VERIFIED });
   try {
     const usersRef = collection(firestore, "users");
     const q = query(usersRef, where("uid", "==", user.uid));  
@@ -179,3 +179,48 @@ export const sendResetPasswordEmail = (email: string) => async (dispatch: Dispat
     });
   }
 };  
+
+export const editProfile = (email: string, displayName: string) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+  try {
+    if (auth.currentUser === null) return;
+    
+    // TODO: make this modal
+    const emailPrompt = prompt("Provide your e-mail:");
+    const passwordPrompt = prompt("Provide your password:");
+    if (emailPrompt === null || passwordPrompt === null) return;
+
+    dispatch({ type: authTypes.UPDATE_USER_START });
+
+    const credential = EmailAuthProvider.credential(emailPrompt, passwordPrompt);
+    await reauthenticateWithCredential(auth.currentUser, credential);
+
+    await updateProfile(auth.currentUser, { displayName });
+    await updateEmail(auth.currentUser, email);
+
+    const docRef = collection(firestore, "users");
+    const q = query(docRef, where("uid", "==", auth.currentUser.uid));  
+    const querySnap = await getDocs(q);
+    querySnap.forEach(async (doc) => {
+      if (doc.exists()) {
+        await updateDoc(doc.ref, { email, displayName });
+      }
+    });
+
+    dispatch({ 
+      type: authTypes.UPDATE_USER_SUCCESS,
+      payload: {
+        message: "Your profile has been updated",
+        data: {
+          email,
+          displayName,
+        },
+      },
+    });
+  } catch (err: any) {
+    console.log(err);
+    dispatch({
+      type: authTypes.UPDATE_USER_FAIL,
+      payload: formatErrorMessage(err.code)
+    });
+  }
+};

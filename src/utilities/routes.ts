@@ -4,4 +4,5 @@ export default {
   register: "/register",
   forgotPassword: "/forgot-password",
   profile: "/profile",
+  editProfile: "/edit-profile",
 };

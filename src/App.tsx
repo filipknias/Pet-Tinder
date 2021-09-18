@@ -5,6 +5,7 @@ import IndexPage from "./pages/Index/IndexPage";
 import LoginPage from "./pages/Auth/Login";
 import RegisterPage from "./pages/Auth/Register";
 import ProfilePage from "./pages/Profile/ProfilePage";
+import EditProfile from "./pages/Auth/EditProfile";
 import {
   BrowserRouter as Router,
   Switch,
@@ -26,6 +27,8 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
   const { getQueriedItems }  = useFirestore(firestore);
+
+  // TODO: work on changing page title when page changes
 
   const getUserAndSetInState = async (uid: string) => {
     const userDocRef = collection(firestore, "users");
@@ -63,6 +66,7 @@ const App: React.FC = () => {
           <Switch>
             <Route path={routes.index} exact component={IndexPage} />
             <ProtectedRoute path={routes.profile} isAuth={isAuth} component={ProfilePage} />
+            <ProtectedRoute path={routes.editProfile} isAuth={isAuth} component={EditProfile} />
             <GuestRoute path={routes.signIn} isAuth={isAuth} component={LoginPage} />
             <GuestRoute path={routes.register} isAuth={isAuth} component={RegisterPage} />
           </Switch>

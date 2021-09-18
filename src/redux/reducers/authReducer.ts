@@ -137,10 +137,46 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
         authFeedback: null,
       }
     };
-    case authTypes.UPDATE_USER: {
+    case authTypes.MARK_USER_VERIFIED: {
+      if (state.user === null) return state;
       return {
         ...state,
-        user: { ...action.payload },
+        user: { 
+          ...state.user,
+          verified: true,
+        },
+      }
+    };
+    case authTypes.UPDATE_USER_START: {
+      return {
+        ...state,
+        authFeedback: null,
+        loading: true, 
+      }
+    };
+    case authTypes.UPDATE_USER_SUCCESS: {
+      if (state.user === null) return state;
+      return {
+        ...state,
+        authFeedback: {
+          type: "success",
+          message: action.payload.message,
+        },
+        loading: false,
+        user: {
+          ...state.user,
+          ...action.payload.data,
+        }
+      }
+    };
+    case authTypes.UPDATE_USER_FAIL: {
+      return {
+        ...state,
+        authFeedback: {
+          type: "fail",
+          message: action.payload,
+        },
+        loading: false,
       }
     };
     case authTypes.CLEAR_OUT: {

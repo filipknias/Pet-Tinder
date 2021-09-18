@@ -12,9 +12,14 @@ export const RESET_PASSWORD_START = "RESET_PASSWORD_START";
 export const RESET_PASSWORD_SUCCESS = "RESET_PASSWORD_SUCCESS";
 export const RESET_PASSWORD_FAIL = "RESET_PASSWORD_FAIL";
 
+export const UPDATE_USER_START = "UPDATE_USER_START";
+export const UPDATE_USER_SUCCESS = "UPDATE_USER_SUCCESS";
+export const UPDATE_USER_FAIL = "UPDATE_USER_FAIL";
+
+export const MARK_USER_VERIFIED = "MARK_USER_VERIFIED";
+
 export const LOGOUT_USER = "LOGOUT_USER";
 export const CLEAR_OUT = "CLEAR_OUT";
-export const UPDATE_USER = "UPDATE_USER";
 
 export interface AuthStartAction { 
   type: typeof AUTH_START; 
@@ -52,16 +57,34 @@ export interface ResetPasswordFail {
   payload: string;
 };
 
+interface DataToEdit {
+  email?: string,
+  displayName?: string;
+};
+export interface UpdateUserStart { 
+  type: typeof UPDATE_USER_START;
+};
+export interface UpdateUserSuccess { 
+  type: typeof UPDATE_USER_SUCCESS; 
+  payload: {
+    message: string;
+    data: DataToEdit;
+  }; 
+};
+export interface UpdateUserFail { 
+  type: typeof UPDATE_USER_FAIL;  
+  payload: string;
+};
+
+export interface MarkUserVerified {
+  type: typeof MARK_USER_VERIFIED;
+};
 
 export interface LogoutAction {
   type: typeof LOGOUT_USER; 
 };
 export interface ClearOutAction {
   type: typeof CLEAR_OUT; 
-};
-export interface UpdateUserAction {
-  type: typeof UPDATE_USER; 
-  payload: User;
 };
 
 export type AuthActionTypes = 
@@ -73,7 +96,10 @@ export type AuthActionTypes =
                             VerifySuccessAction |
                             VerifyFailAction |
                             ClearOutAction |
-                            UpdateUserAction |
+                            UpdateUserStart |
+                            UpdateUserSuccess |
+                            UpdateUserFail |
                             ResetPasswordStart |
                             ResetPasswordSuccess |
-                            ResetPasswordFail; 
+                            ResetPasswordFail |
+                            MarkUserVerified; 

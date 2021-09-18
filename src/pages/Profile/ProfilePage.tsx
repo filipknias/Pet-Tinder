@@ -12,6 +12,8 @@ import { RootState } from "../../redux/store";
 import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
 import * as authTypes from "../../redux/types/authTypes";
 import { auth } from "../../utilities/firebase";
+import { Link } from "react-router-dom";
+import routes from '../../utilities/routes';
 
 const LogoutButton: React.FC = () => {
   const dispatch = useDispatch();
@@ -86,7 +88,7 @@ const ProfilePage: React.FC = () => {
               <RoundedButton 
                 color={Colors.blue} 
                 style={verifyUser.loading ? listItemLoadingStyle : listItemButtonStyle} 
-                onClick={buttonsDisabled ? undefined : () => dispatch(sendVerificationEmail(auth.currentUser))}
+                onClick={buttonsDisabled ? undefined : () => dispatch(sendVerificationEmail())}
               >
                 <>
                   {verifyUser.loading ? (
@@ -131,9 +133,11 @@ const ProfilePage: React.FC = () => {
               <h3 className="profileContainer__list__item__container__title">User credentails</h3>
             </div>
             <Tooltip text="Edit profile">
-              <RoundedButton color={Colors.blue} style={listItemButtonStyle}>
-                <FontAwesomeIcon icon={faChevronRight} />
-              </RoundedButton>
+              <Link to={routes.editProfile}>
+                <RoundedButton color={Colors.blue} style={listItemButtonStyle}>
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </RoundedButton>
+              </Link>
             </Tooltip>
           </li>
         </ul>

@@ -13,39 +13,29 @@ import {
 import routes from "./utilities/routes";
 import { auth, firestore } from "./utilities/firebase"; 
 import * as authTypes from "./redux/types/authTypes";
-import User from "./models/User";
-import { collection, query, where, getDocs } from "firebase/firestore"; 
+import { collection, where } from "firebase/firestore"; 
 import GuestRoute from './components/Routes/GuestRoute';
 import ProtectedRoute from './components/Routes/ProtectedRoute';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { verifyUser } from "./redux/actions/authActions";
 import { getToken } from "./redux/actions/petsActions";
+import useFirestore from "./hooks/useFirestore";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
+  const { getQueriedItems }  = useFirestore(firestore);
 
   const getUserAndSetInState = async (uid: string) => {
-    const docRef = collection(firestore, "users");
-    const q = query(docRef, where("uid", "==", uid));  
-    const querySnap = await getDocs(q);
+    const userDocRef = collection(firestore, "users");
+    const userQuery = where("uid", "==", uid);
+    const dbUser = await getQueriedItems(userDocRef, userQuery);
+    
     // TODO: try catch block
-    querySnap.forEach((doc) => {
-      if (doc.exists()) {
-        const dbUser = doc.data();
-        const userObject: User = {
-          uid: dbUser.uid,
-          email: dbUser.email,
-          displayName: dbUser.displayName,
-          verified: dbUser.verified,
-          member_since: dbUser.member_since,
-        };
-        dispatch({
-          type: authTypes.AUTH_SUCCESS,
-          payload: userObject
-        });
-      }
+    dispatch({
+      type: authTypes.AUTH_SUCCESS,
+      payload: dbUser[0]
     });
   };  
 
@@ -64,8 +54,6 @@ const App: React.FC = () => {
       dispatch(verifyUser(user));
     }
   }, [auth.currentUser?.emailVerified]);
-
-  // TODO: think about creating useFirebase hook
 
   return (
     <Router>

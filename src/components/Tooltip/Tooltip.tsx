@@ -1,6 +1,6 @@
 import React from 'react';
 import "./tooltip.scss";
-import { Placement } from "../../types/globalTypes";
+import { Placement } from "../../types/global";
 
 interface Props {
   children: React.ReactElement;

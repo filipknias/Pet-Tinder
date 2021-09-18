@@ -1,6 +1,6 @@
 import React from 'react';
 import "./authFeedback.scss";
-import { AuthFeedbackType } from "../../types/globalTypes";
+import { AuthFeedbackType } from "../../types/global";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 

@@ -1,5 +1,5 @@
-import { Pet, Pagination } from "../../types/apiTypes";
-import { StorageToken } from "../../types/globalTypes";
+import { Pet, Pagination } from "../../types/api";
+import { StorageToken } from "../../types/global";
 import * as petsTypes from "../types/petsTypes";
 
 export interface PetsState {

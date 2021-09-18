@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./indexPage.scss";
-import { Placement, Colors } from "../../types/globalTypes";
+import { Placement, Colors } from "../../types/global";
 import TinderCard from "../../components/TinderCard/TinderCard";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import ErrorScreen from "../../components/ErrorScreen/ErrorScreen";

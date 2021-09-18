@@ -6,7 +6,7 @@ import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { Colors } from "../../types/globalTypes";
+import { Colors } from "../../types/global";
 import { Link } from "react-router-dom";
 import routes from "../../utilities/routes";
 import { registerUser } from "../../redux/actions/authActions";

@@ -1,4 +1,4 @@
-import { StorageToken } from "../../types/globalTypes";
+import { StorageToken } from "../../types/global";
 import { Dispatch } from "redux";
 import * as petsTypes from "../types/petsTypes";
 import { formatToken, isTokenExpired } from "../../utilities/helpers";
@@ -30,12 +30,9 @@ export const getToken = () => async (dispatch: Dispatch<petsTypes.PetsActionType
     let token: StorageToken|null = null;
     // Check if token is in localstorage
     const savedToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_KEY);
-    if (savedToken) {
+    if (savedToken && !isTokenExpired(JSON.parse(savedToken))) {
       // Check if token expired, if so get new one
-      const parsedToken = JSON.parse(savedToken);
-      if (!isTokenExpired(parsedToken)) {
-        token = parsedToken;
-      }
+      token = JSON.parse(savedToken);
     } else {
       const { data } = await axios.post("https://api.petfinder.com/v2/oauth2/token", {
         grant_type: "client_credentials",

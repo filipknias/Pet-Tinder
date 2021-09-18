@@ -6,7 +6,7 @@ import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
 import AuthForm from "../../components/AuthForm/AuthForm";
-import { Colors } from "../../types/globalTypes";
+import { Colors } from "../../types/global";
 import { Link } from "react-router-dom";
 import routes from "../../utilities/routes";
 import { signInUser } from "../../redux/actions/authActions";

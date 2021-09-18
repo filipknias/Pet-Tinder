@@ -1,6 +1,6 @@
 import React from 'react';
 import "./roundedButton.scss";
-import { Colors } from "../../types/globalTypes";
+import { Colors } from "../../types/global";
 
 interface Props {
   color: Colors;

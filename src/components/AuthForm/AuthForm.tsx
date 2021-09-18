@@ -2,7 +2,7 @@ import React from 'react';
 import "./authForm.scss";
 import RoundedButton from "../RoundedButton/RoundedButton";
 import Tooltip from "../Tooltip/Tooltip";
-import { Colors } from "../../types/globalTypes";
+import { Colors } from "../../types/global";
 import googleIcon from "../../assets/googleIcon.svg";
 import facebookIcon from "../../assets/facebookIcon.svg";
 

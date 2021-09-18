@@ -2,7 +2,7 @@ import React from 'react';
 import "./header.scss";
 import RoundedButton from "../RoundedButton/RoundedButton";
 import Tooltip from "../Tooltip/Tooltip";
-import { Colors } from "../../types/globalTypes";
+import { Colors } from "../../types/global";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaw, faHeart, faUserTimes, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";

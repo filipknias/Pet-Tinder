@@ -12,7 +12,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
 export const timestamp = serverTimestamp();
+export type Firestore = typeof firestore;
+
 export default app;

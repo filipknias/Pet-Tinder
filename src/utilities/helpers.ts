@@ -1,4 +1,4 @@
-import { Token, StorageToken } from "../types/globalTypes";
+import { Token, StorageToken } from "../types/global";
 
 export const formatToken = (token: Token): StorageToken => {
   return {

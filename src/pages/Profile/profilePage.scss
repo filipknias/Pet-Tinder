@@ -2,6 +2,10 @@
 @import "../../styles/mixins";
 
 .profileContainer {
+  .profileContainer__errors {
+    @include flex(center, center, column);
+    gap: 0.5rem;
+  }
   .profileContainer__list {
     list-style: none;
     .profileContainer__list__item {

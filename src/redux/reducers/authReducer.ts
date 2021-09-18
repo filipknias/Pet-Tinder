@@ -1,8 +1,13 @@
 import * as authTypes from "../types/authTypes";
 import User from "../../models/User";
-import { AuthFeedback } from "../../types/globalTypes";
+import { AuthFeedback } from "../../types/global";
 
 interface VerifyUser {
+  feedback: AuthFeedback|null;
+  loading: boolean;
+};
+
+interface ResetPassword {
   feedback: AuthFeedback|null;
   loading: boolean;
 };
@@ -13,6 +18,7 @@ export interface AuthState {
   authFeedback: AuthFeedback|null;
   loading: boolean;
   verifyUser: VerifyUser;
+  resetPassword: ResetPassword;
 };
 
 const initialState: AuthState = {
@@ -21,6 +27,10 @@ const initialState: AuthState = {
   authFeedback: null,
   loading: false,
   verifyUser: {
+    feedback: null,
+    loading: false,
+  },
+  resetPassword: {
     feedback: null,
     loading: false,
   },
@@ -86,6 +96,39 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
         },  
       }
     };
+    case authTypes.RESET_PASSWORD_START: {
+      return {
+        ...state,
+        resetPassword: {
+          feedback: null,
+          loading: true,
+        },  
+      }
+    };
+    case authTypes.RESET_PASSWORD_SUCCESS: {
+      return {
+        ...state,
+        resetPassword: {
+          feedback: {
+            type: "success",
+            message: action.payload,
+          },
+          loading: false,
+        },  
+      }
+    };
+    case authTypes.RESET_PASSWORD_FAIL: {
+      return {
+        ...state,
+        resetPassword: {
+          feedback: {
+            type: "fail",
+            message: action.payload,
+          },
+          loading: false,
+        },  
+      }
+    };
     case authTypes.LOGOUT_USER: {
       return {
         ...state,
@@ -107,7 +150,11 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
         verifyUser: {
           ...state.verifyUser,
           feedback: null,
-        }
+        },
+        resetPassword: {
+          ...state.resetPassword,
+          feedback: null,
+        },
       }
     };
     default: {

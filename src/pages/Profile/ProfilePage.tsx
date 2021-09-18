@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import "./profilePage.scss";
-import { logoutUser, sendVerificationEmail } from "../../redux/actions/authActions";
+import { logoutUser, sendVerificationEmail, sendResetPasswordEmail } from "../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import AuthForm from "../../components/AuthForm/AuthForm";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faEnvelope, faUserCog, faUnlockAlt, faChevronRight, faUserSlash, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import Tooltip from "../../components/Tooltip/Tooltip";
-import { Colors } from "../../types/globalTypes";
+import { Colors } from "../../types/global";
 import { RootState } from "../../redux/store";
 import AuthFeedback from "../../components/AuthFormFeedback/AuthFeedback";
 import * as authTypes from "../../redux/types/authTypes";
@@ -31,7 +31,7 @@ const LogoutButton: React.FC = () => {
 const ProfilePage: React.FC = () => {
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const { verifyUser } = useSelector((state: RootState) => state.authReducer);
+  const { user, verifyUser, resetPassword } = useSelector((state: RootState) => state.authReducer);
   const listItemButtonStyle = {
     fontSize: "1.5rem", 
     padding: "0.9rem 1.2rem",
@@ -54,12 +54,25 @@ const ProfilePage: React.FC = () => {
     }
   }, [verifyUser.loading]);
 
+  const handleResetPassword = () => {
+    if (buttonsDisabled) return undefined;
+    else {
+      if (user === null) return;
+      dispatch(sendResetPasswordEmail(user.email));
+    }
+  };
+
   return (
     <AuthForm header="Profile" button={LogoutButton}>
       <div className="profileContainer">
-        {verifyUser.feedback && (
-          <AuthFeedback type={verifyUser.feedback.type} message={verifyUser.feedback.message} />
-        )}
+        <div className="profileContainer__errors">
+          {verifyUser.feedback && (
+            <AuthFeedback type={verifyUser.feedback.type} message={verifyUser.feedback.message} />
+          )}
+          {resetPassword.feedback && (
+            <AuthFeedback type={resetPassword.feedback.type} message={resetPassword.feedback.message} />
+          )}
+        </div>
         <ul className="profileContainer__list">
           <li className="profileContainer__list__item">
             <div className="profileContainer__list__item__container">
@@ -94,8 +107,18 @@ const ProfilePage: React.FC = () => {
               <h3 className="profileContainer__list__item__container__title">Reset password</h3>
             </div>
             <Tooltip text="Reset password">
-              <RoundedButton color={Colors.blue} style={listItemButtonStyle}>
-                <FontAwesomeIcon icon={faChevronRight} />
+              <RoundedButton 
+                color={Colors.blue}
+                style={resetPassword.loading ? listItemLoadingStyle : listItemButtonStyle} 
+                onClick={handleResetPassword}
+              >
+                <>
+                  {resetPassword.loading ? (
+                    <FontAwesomeIcon className="profileContainer__list__item__loadingIcon" icon={faSpinner} />
+                  ) : (
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  )}
+                </>
               </RoundedButton>
             </Tooltip>
           </li>

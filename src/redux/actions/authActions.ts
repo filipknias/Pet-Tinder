@@ -1,6 +1,12 @@
 import * as authTypes from "../types/authTypes";
 import User from "../../models/User";
-import { createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  signInWithEmailAndPassword, 
+  sendEmailVerification,
+  sendPasswordResetEmail, 
+} from "firebase/auth";
 import { collection, addDoc, query, where, getDocs, updateDoc, doc } from "firebase/firestore"; 
 import { auth, firestore, timestamp } from "../../utilities/firebase";
 import { useHistory } from "react-router-dom";
@@ -154,5 +160,22 @@ export const verifyUser = (user: User) => async (dispatch: Dispatch<authTypes.Au
     });
   } catch (err: any) {
     console.log(err);
+  }
+};  
+
+export const sendResetPasswordEmail = (email: string) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+  try { 
+    dispatch({ type: authTypes.RESET_PASSWORD_START });
+    await sendPasswordResetEmail(auth, email);
+    dispatch({
+      type: authTypes.RESET_PASSWORD_SUCCESS,
+      payload: "Reset password e-mail has been sent"
+    });
+  } catch (err: any) {
+    console.log(err);
+    dispatch({
+      type: authTypes.VERIFY_FAIL,
+      payload: formatErrorMessage(err.code)
+    });
   }
 };  

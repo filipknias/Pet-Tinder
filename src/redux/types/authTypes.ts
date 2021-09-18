@@ -40,6 +40,18 @@ export interface VerifyFailAction {
   payload: string;
 };
 
+export interface ResetPasswordStart { 
+  type: typeof RESET_PASSWORD_START;
+};
+export interface ResetPasswordSuccess { 
+  type: typeof RESET_PASSWORD_SUCCESS;  
+  payload: string;
+};
+export interface ResetPasswordFail { 
+  type: typeof RESET_PASSWORD_FAIL; 
+  payload: string;
+};
+
 
 export interface LogoutAction {
   type: typeof LOGOUT_USER; 
@@ -61,4 +73,7 @@ export type AuthActionTypes =
                             VerifySuccessAction |
                             VerifyFailAction |
                             ClearOutAction |
-                            UpdateUserAction; 
+                            UpdateUserAction |
+                            ResetPasswordStart |
+                            ResetPasswordSuccess |
+                            ResetPasswordFail; 

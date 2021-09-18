@@ -83,8 +83,11 @@ const IndexPage: React.FC = () => {
   
 
   const handleLikeClick = () => {
-    if (pagination === null) return;
+    if (pagination === null || token === null) return;
     setButtonsDisabled(true);
+    if (isTokenExpired(token)) {
+      dispatch(getToken());
+    }
     makeCardAnimation(() => {
       // TODO: save in DB
       // Check for next page
@@ -98,9 +101,12 @@ const IndexPage: React.FC = () => {
   }
 
   const handleDislikeClick = () => {
-    if (pagination === null) return;
+    if (pagination === null || token === null) return;
     setButtonsDisabled(true);
-      makeCardAnimation(() => {
+    if (isTokenExpired(token)) {
+      dispatch(getToken());
+    }
+    makeCardAnimation(() => {
         // TODO: save in DB
         // Check for next page
         if (hasNextPage()) {

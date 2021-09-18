@@ -9,9 +9,18 @@ import {
   updateProfile,
   updateEmail,
   reauthenticateWithCredential,
-  EmailAuthProvider
+  EmailAuthProvider,
+  deleteUser as deleteUserFromFirebase,
 } from "firebase/auth";
-import { collection, addDoc, query, where, getDocs, updateDoc } from "firebase/firestore"; 
+import { 
+  collection, 
+  addDoc, 
+  query, 
+  where, 
+  getDocs, 
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore"; 
 import { auth, firestore, timestamp } from "../../utilities/firebase";
 import { useHistory } from "react-router-dom";
 import { Dispatch } from "redux";
@@ -123,9 +132,17 @@ export const signInUser = (email: string, password: string, history: History) =>
 };
 
 export const logoutUser = () => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
-  // TODO: set logout loading and error
-  await signOut(auth);
-  dispatch({ type: authTypes.LOGOUT_USER });
+  try {
+    dispatch({ type: authTypes.LOGOUT_USER_START });
+    await signOut(auth);
+    dispatch({ type: authTypes.LOGOUT_USER_SUCCESS });
+  } catch (err: any) {
+    console.log(err);
+    dispatch({ 
+      type: authTypes.LOGOUT_USER_START,
+      payload: formatErrorMessage(err.code),
+    });
+  }
 };
 
 export const sendVerificationEmail = () => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
@@ -217,6 +234,37 @@ export const editProfile = (email: string, displayName: string, credentials: Cre
     console.log(err);
     dispatch({
       type: authTypes.UPDATE_USER_FAIL,
+      payload: formatErrorMessage(err.code)
+    });
+  }
+};
+
+export const deleteUser = (uid: string, history: History, credentials: Credentials) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+  try {
+    if (auth.currentUser === null) return;
+    if (credentials.email === null || credentials.password === null) return;
+    dispatch({ type: authTypes.DELETE_USER_START });
+
+    const emailProviderCredentials = EmailAuthProvider.credential(credentials.email, credentials.password);
+    await reauthenticateWithCredential(auth.currentUser, emailProviderCredentials);
+
+    await deleteUserFromFirebase(auth.currentUser);
+    
+    const docRef = collection(firestore, "users");
+    const q = query(docRef, where("uid", "==", uid));  
+    const querySnap = await getDocs(q);
+    querySnap.forEach(async (doc) => {
+      if (doc.exists()) {
+        await deleteDoc(doc.ref);
+      }
+    })
+    
+    dispatch({ type: authTypes.DELETE_USER_SUCCESS });
+    history.push(routes.index);
+  } catch (err: any) {
+    console.log(err);
+    dispatch({
+      type: authTypes.DELETE_USER_FAIL,
       payload: formatErrorMessage(err.code)
     });
   }

@@ -12,6 +12,16 @@ interface ResetPassword {
   loading: boolean;
 };
 
+interface Logout {
+  feedback: AuthFeedback|null;
+  loading: boolean;
+}
+
+interface DeleteUser {
+  feedback: AuthFeedback|null;
+  loading: boolean;
+}
+
 export interface AuthState {
   user: User|null;
   isAuth: boolean;
@@ -19,6 +29,8 @@ export interface AuthState {
   loading: boolean;
   verifyUser: VerifyUser;
   resetPassword: ResetPassword;
+  logout: Logout;
+  deleteUser: DeleteUser;
 };
 
 const initialState: AuthState = {
@@ -31,6 +43,14 @@ const initialState: AuthState = {
     loading: false,
   },
   resetPassword: {
+    feedback: null,
+    loading: false,
+  },
+  logout: {
+    feedback: null,
+    loading: false,
+  },
+  deleteUser: {
     feedback: null,
     loading: false,
   },
@@ -129,12 +149,68 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
         },  
       }
     };
-    case authTypes.LOGOUT_USER: {
+    case authTypes.LOGOUT_USER_START: {
+      return {
+        ...state,
+        logout: {
+          loading: true,
+          feedback: null,
+        },
+      }
+    };
+    case authTypes.LOGOUT_USER_SUCCESS: {
       return {
         ...state,
         user: null,
         isAuth: false,
-        authFeedback: null,
+        logout: {
+          loading: false,
+          feedback: null,
+        },
+      }
+    };
+    case authTypes.LOGOUT_USER_FAIL: {
+      return {
+        ...state,
+        logout: {
+          loading: false,
+          feedback: {
+            type: "fail",
+            message: action.payload,
+          },
+        },
+      }
+    };
+    case authTypes.DELETE_USER_START: {
+      return {
+        ...state,
+        deleteUser: {
+          loading: true,
+          feedback: null,
+        },
+      }
+    };
+    case authTypes.DELETE_USER_SUCCESS: {
+      return {
+        ...state,
+        user: null,
+        isAuth: false,
+        deleteUser: {
+          loading: false,
+          feedback: null,
+        },
+      }
+    };
+    case authTypes.DELETE_USER_FAIL: {
+      return {
+        ...state,
+        deleteUser: {
+          loading: false,
+          feedback: {
+            type: "fail",
+            message: action.payload,
+          },
+        },
       }
     };
     case authTypes.MARK_USER_VERIFIED: {
@@ -158,11 +234,11 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
       if (state.user === null) return state;
       return {
         ...state,
+        loading: false,
         authFeedback: {
           type: "success",
           message: action.payload.message,
         },
-        loading: false,
         user: {
           ...state.user,
           ...action.payload.data,
@@ -191,6 +267,14 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
           ...state.resetPassword,
           feedback: null,
         },
+        logout: {
+          ...state.logout,
+          feedback: null,
+        },
+        deleteUser: {
+          ...state.deleteUser,
+          feedback: null,
+        },  
       }
     };
     default: {

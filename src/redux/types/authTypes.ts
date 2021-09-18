@@ -16,9 +16,16 @@ export const UPDATE_USER_START = "UPDATE_USER_START";
 export const UPDATE_USER_SUCCESS = "UPDATE_USER_SUCCESS";
 export const UPDATE_USER_FAIL = "UPDATE_USER_FAIL";
 
+export const LOGOUT_USER_START = "LOGOUT_USER_START";
+export const LOGOUT_USER_SUCCESS = "LOGOUT_USER_SUCCESS";
+export const LOGOUT_USER_FAIL = "LOGOUT_USER_FAIL";
+
+export const DELETE_USER_START = "DELETE_USER_START";
+export const DELETE_USER_SUCCESS = "DELETE_USER_SUCCESS";
+export const DELETE_USER_FAIL = "DELETE_USER_FAIL";
+
 export const MARK_USER_VERIFIED = "MARK_USER_VERIFIED";
 
-export const LOGOUT_USER = "LOGOUT_USER";
 export const CLEAR_OUT = "CLEAR_OUT";
 
 export interface AuthStartAction { 
@@ -76,13 +83,33 @@ export interface UpdateUserFail {
   payload: string;
 };
 
+export interface LogoutStartAction {
+  type: typeof LOGOUT_USER_START; 
+};
+export interface LogoutSuccessAction {
+  type: typeof LOGOUT_USER_SUCCESS; 
+};
+export interface LogoutFailAction {
+  type: typeof LOGOUT_USER_FAIL; 
+  payload: string; 
+};
+
+export interface DeleteUserStart {
+  type: typeof DELETE_USER_START; 
+};
+export interface DeleteUserSuccess {
+  type: typeof DELETE_USER_SUCCESS; 
+};
+export interface DeleteUserFail {
+  type: typeof DELETE_USER_FAIL; 
+  payload: string; 
+};
+
+
 export interface MarkUserVerified {
   type: typeof MARK_USER_VERIFIED;
 };
 
-export interface LogoutAction {
-  type: typeof LOGOUT_USER; 
-};
 export interface ClearOutAction {
   type: typeof CLEAR_OUT; 
 };
@@ -91,7 +118,9 @@ export type AuthActionTypes =
                             AuthStartAction | 
                             AuthSuccessAction | 
                             AuthFailAction | 
-                            LogoutAction |
+                            LogoutStartAction |
+                            LogoutSuccessAction |
+                            LogoutFailAction |
                             VerifyStartAction |
                             VerifySuccessAction |
                             VerifyFailAction |
@@ -102,4 +131,7 @@ export type AuthActionTypes =
                             ResetPasswordStart |
                             ResetPasswordSuccess |
                             ResetPasswordFail |
-                            MarkUserVerified; 
+                            MarkUserVerified |
+                            DeleteUserStart |
+                            DeleteUserSuccess |
+                            DeleteUserFail; 

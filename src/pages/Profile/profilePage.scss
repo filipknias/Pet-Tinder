@@ -12,6 +12,9 @@
       @include flex(center, center);
       padding: 0.8rem 0.5rem;
       width: 100%;
+      @media (max-width: $breakpoint-sm) {
+        padding: 0.8rem 0.4rem !important;
+      }
       .profileContainer__list__item__loadingIcon {
         @include loadingSpinnerRotate;
       }
@@ -58,6 +61,10 @@
       .profileContainer__buttonsContainer__button__icon {
         margin-right: 0.5rem;
         font-size: 1.1rem;
+      }
+      .profileContainer__buttonsContainer__button__loadingSpinner {
+        @include loadingSpinnerRotate;
+        font-size: 1.3rem;
       }
       &.button--delete {
         background-color: $dark-red;

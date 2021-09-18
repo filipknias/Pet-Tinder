@@ -1,0 +1,29 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: $modal-bg;
+  z-index: 10;
+  display: none;
+  &.modal--open {
+    @include flex(center, center);
+  }
+  .modal__container {
+    border-radius: 10px;
+    background-color: $white;
+    color: $black;
+    padding: 1.5rem;
+    min-width: 300px;
+    min-height: 300px;
+    max-width: 90%;
+    max-height: 60%;
+    @media (max-width: $breakpoint-sm) {
+      padding: 1.5rem 1rem;
+    }
+  }
+}

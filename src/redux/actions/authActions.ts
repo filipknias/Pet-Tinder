@@ -16,6 +16,7 @@ import { auth, firestore, timestamp } from "../../utilities/firebase";
 import { useHistory } from "react-router-dom";
 import { Dispatch } from "redux";
 import routes from "../../utilities/routes";
+import { Credentials } from "../../pages/Auth/EditProfile";
 type History = ReturnType<typeof useHistory>;
 
 const formatDisplayName = (email: string): string => {
@@ -180,19 +181,15 @@ export const sendResetPasswordEmail = (email: string) => async (dispatch: Dispat
   }
 };  
 
-export const editProfile = (email: string, displayName: string) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+export const editProfile = (email: string, displayName: string, credentials: Credentials) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
   try {
     if (auth.currentUser === null) return;
-    
-    // TODO: make this modal
-    const emailPrompt = prompt("Provide your e-mail:");
-    const passwordPrompt = prompt("Provide your password:");
-    if (emailPrompt === null || passwordPrompt === null) return;
-
+    if (credentials.email === null || credentials.password === null) return;
+  
     dispatch({ type: authTypes.UPDATE_USER_START });
 
-    const credential = EmailAuthProvider.credential(emailPrompt, passwordPrompt);
-    await reauthenticateWithCredential(auth.currentUser, credential);
+    const emailProviderCredentials = EmailAuthProvider.credential(credentials.email, credentials.password);
+    await reauthenticateWithCredential(auth.currentUser, emailProviderCredentials);
 
     await updateProfile(auth.currentUser, { displayName });
     await updateEmail(auth.currentUser, email);

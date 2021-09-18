@@ -17,9 +17,9 @@ export const getPets = (page: number = 1) => async (dispatch: Dispatch<petsTypes
         pagination: response.data.pagination,
       },
     });
-  } catch (err) {
+  } catch (err: any) {
     dispatch({ type: petsTypes.PETS_FAIL });
-    console.log(err);
+    console.log(err.code);
   }
 }
 

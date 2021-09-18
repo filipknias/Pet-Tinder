@@ -28,7 +28,7 @@ const App: React.FC = () => {
   const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
   const { getQueriedItems }  = useFirestore(firestore);
 
-  // TODO: work on changing page title when page changes
+  // TODO: work on changing page title when page ch
 
   const getUserAndSetInState = async (uid: string) => {
     const userDocRef = collection(firestore, "users");

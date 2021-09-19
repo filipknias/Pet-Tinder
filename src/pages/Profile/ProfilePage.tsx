@@ -22,6 +22,20 @@ import { useHistory } from 'react-router-dom';
 import ReauthenticateModal from "../Auth/ReauthenticateModal";
 import { Credentials } from '../Auth/EditProfile';
 
+const VerifiedButton: React.FC = () => {
+  const { user } = useSelector((state: RootState) => state.authReducer);
+  return (
+    <Tooltip text={user?.verified ? "Verified" : "Need verification"}>
+      <RoundedButton 
+        color={user?.verified ? Colors.green : Colors.red}
+        style={{ fontSize: "1.6rem", padding: "0.8rem", cursor: "default" }}
+      >
+        <FontAwesomeIcon icon={faEnvelope} />
+      </RoundedButton>
+    </Tooltip>
+  )
+};
+
 const ProfilePage: React.FC = () => {
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(false);
@@ -75,7 +89,7 @@ const ProfilePage: React.FC = () => {
         setCredentials={setCredentials}
         submitAction={handleDeleteUser}
       />
-      <AuthForm header="Profile">
+      <AuthForm header="Profile" button={VerifiedButton}>
         <div className="profileContainer">
           <div className="profileContainer__errors">
             {verifyUser.feedback && (

@@ -9,12 +9,13 @@ import AuthForm from "../../components/AuthForm/AuthForm";
 import { Colors } from "../../types/global";
 import { Link } from "react-router-dom";
 import routes from "../../utilities/routes";
-import { signInUser } from "../../redux/actions/authActions";
+import { signInUser, signInWithProvider } from "../../redux/actions/authActions";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from 'react-router-dom';
 import { RootState } from "../../redux/store";
 import googleIcon from "../../assets/googleIcon.svg";
 import facebookIcon from "../../assets/facebookIcon.svg";
+import { providers } from "../../utilities/firebase";
 
 const RegisterLinkButton: React.FC = () => {
   return (
@@ -46,6 +47,16 @@ const Login: React.FC = () => {
     dispatch(await signInUser(email, password, history));
   };  
 
+  const handleSignInWithGoogle = async () => {
+    if (loading) return;
+    dispatch(signInWithProvider(providers.google, history));
+  };
+
+  const handleSignInWithFacebook = async () => {
+    if (loading) return;
+    dispatch(signInWithProvider(providers.facebook, history));
+  };
+
   return (
     <AuthForm header="Sign In" button={RegisterLinkButton}>
       <form className="form" onSubmit={onSubmit}>
@@ -68,12 +79,20 @@ const Login: React.FC = () => {
         </button>
         <div className="form__providersContainer">
           <Tooltip text="Google">
-            <RoundedButton color={Colors.white} style={{ padding: "1.2rem" }} >
+            <RoundedButton 
+              color={Colors.white} 
+              style={{ padding: "1.2rem" }}
+              onClick={handleSignInWithGoogle} 
+            >
                 <img src={googleIcon} alt="Google" width={30}  />
             </RoundedButton>
           </Tooltip>
           <Tooltip text="Facebook">
-            <RoundedButton color={Colors.white} style={{ padding: "1.2rem" }}>
+            <RoundedButton 
+              color={Colors.white} 
+              style={{ padding: "1.2rem" }}
+              onClick={handleSignInWithFacebook}
+            >
                 <img src={facebookIcon} alt="Facebook" width={30} />
             </RoundedButton>
           </Tooltip>

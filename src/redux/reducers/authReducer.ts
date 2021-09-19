@@ -83,6 +83,23 @@ const authReducer = (state: AuthState = initialState, action: authTypes.AuthActi
         loading: false,
       }
     };
+    case authTypes.SIGN_IN_WITH_PROVIDER_SUCCESS: {
+      return {
+        ...state,
+        user: action.payload,
+        isAuth: true,
+        authFeedback: null,
+      }
+    };
+    case authTypes.SIGN_IN_WITH_PROVIDER_FAIL: {
+      return {
+        ...state,
+        authFeedback: {
+          type: "fail",
+          message: action.payload,
+        },
+      }
+    };
     case authTypes.VERIFY_START: {
       return {
         ...state,

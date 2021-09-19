@@ -4,6 +4,9 @@ export const AUTH_START = "AUTH_START";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const AUTH_FAIL = "AUTH_FAIL";
 
+export const SIGN_IN_WITH_PROVIDER_SUCCESS = "SIGN_IN_WITH_PROVIDER_SUCCESS";
+export const SIGN_IN_WITH_PROVIDER_FAIL = "SIGN_IN_WITH_PROVIDER_FAIL";
+
 export const VERIFY_START = "VERIFY_START";
 export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
 export const VERIFY_FAIL = "VERIFY_FAIL";
@@ -37,6 +40,15 @@ export interface AuthSuccessAction {
 };
 export interface AuthFailAction { 
   type: typeof AUTH_FAIL;
+  payload: string;
+};
+
+export interface SignInWithProviderSuccess {
+  type: typeof SIGN_IN_WITH_PROVIDER_SUCCESS;
+  payload: User;
+};
+export interface SignInWithProviderFail {
+  type: typeof SIGN_IN_WITH_PROVIDER_FAIL;
   payload: string;
 };
 
@@ -117,7 +129,9 @@ export interface ClearOutAction {
 export type AuthActionTypes = 
                             AuthStartAction | 
                             AuthSuccessAction | 
-                            AuthFailAction | 
+                            AuthFailAction |
+                            SignInWithProviderSuccess |
+                            SignInWithProviderFail | 
                             LogoutStartAction |
                             LogoutSuccessAction |
                             LogoutFailAction |

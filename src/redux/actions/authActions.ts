@@ -11,6 +11,8 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
   deleteUser as deleteUserFromFirebase,
+  signInWithPopup,
+  AuthProvider,
 } from "firebase/auth";
 import { 
   collection, 
@@ -269,3 +271,33 @@ export const deleteUser = (uid: string, history: History, credentials: Credentia
     });
   }
 };
+
+export const signInWithProvider = (provider: AuthProvider, history: History) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+  try {
+    const { user } = await signInWithPopup(auth, provider);
+    const userObject: User = {
+      uid: user.uid,
+      email: user.email ? user.email : "unknown",
+      displayName: user.displayName ? user.displayName : "unknown",
+      member_since: timestamp,
+      verified: user.emailVerified,
+    };
+    console.log(userObject);
+    // Add user to firestore
+    await addDoc(collection(firestore, "users"), userObject);
+    // Set in state
+    dispatch({
+      type: authTypes.SIGN_IN_WITH_PROVIDER_SUCCESS,
+      payload: userObject,
+    });
+    // Redirect to index page
+    history.push(routes.index);
+  } catch (err: any) {
+    console.log(err);
+    dispatch({
+      type: authTypes.SIGN_IN_WITH_PROVIDER_FAIL,
+      payload: formatErrorMessage(err.code),
+    });
+  }
+};
+ 

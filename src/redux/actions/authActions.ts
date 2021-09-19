@@ -194,7 +194,7 @@ export const sendResetPasswordEmail = (email: string) => async (dispatch: Dispat
   } catch (err: any) {
     console.log(err);
     dispatch({
-      type: authTypes.VERIFY_FAIL,
+      type: authTypes.RESET_PASSWORD_FAIL,
       payload: formatErrorMessage(err.code)
     });
   }

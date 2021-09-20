@@ -10,9 +10,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faTimesCircle, faRedo, faSortAmountUp } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from "react-redux";
 import { getToken, getPets } from "../../redux/actions/petsActions";
+import { pushNotification } from "../../redux/actions/uiActions";
 import { NEXT_PAGE } from "../../redux/types/petsTypes";
 import { RootState } from "../../redux/store";
 import { isTokenExpired } from '../../utilities/helpers';
+import { Notification } from "../../types/global";
+import { v4 as uuid } from "uuid";
 
 const IndexPage: React.FC = () => {
   const [currentPetIndex, setCurrentPetIndex] = useState<number>(0);
@@ -85,9 +88,23 @@ const IndexPage: React.FC = () => {
   const handleLikeClick = () => {
     if (pagination === null || token === null) return;
     setButtonsDisabled(true);
+    // Check if token is expired
     if (isTokenExpired(token)) {
       dispatch(getToken());
     }
+
+    // if (user && !user.verified) {
+    //   const verifyNotification: Notification = {
+    //     id: uuid(),
+    //     message: "You need to verify e-mail before you continue",
+    //     type: "fail",
+    //     duration: 1500,
+    //   };
+    //   dispatch(pushNotification(verifyNotification));
+    //   setButtonsDisabled(false);
+    //   return;
+    // } 
+    
     makeCardAnimation(() => {
       // TODO: save in DB
       // Check for next page
@@ -98,6 +115,7 @@ const IndexPage: React.FC = () => {
       }
       setButtonsDisabled(false);
     });
+    
   }
 
   const handleDislikeClick = () => {

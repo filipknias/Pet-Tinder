@@ -27,6 +27,7 @@ import useFirestore from "./hooks/useFirestore";
 import Notification from "./components/Notification/Notification";
 import { Notification as NotificationInterface } from "./types/global";
 import { formatErrorMessage } from './utilities/helpers';
+import { v4 as uuid } from "uuid";
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -44,9 +45,17 @@ const App: React.FC = () => {
         type: authTypes.AUTH_SUCCESS,
         payload: dbUser[0]
       });
+
+      const userNotification: NotificationInterface = {
+        id: uuid(),
+        message: `Signed in as ${dbUser[0].email}`,
+        type: "info",
+        duration: 2000,
+      };
+      dispatch(pushNotification(userNotification));
     } catch (err: any) {
       const errorNotification: NotificationInterface = {
-        id: 1,
+        id: uuid(),
         message: formatErrorMessage(err.code),
         type: "fail",
         duration: 1500,
@@ -68,17 +77,26 @@ const App: React.FC = () => {
     if (auth.currentUser && auth.currentUser.emailVerified) {
       if (user === null) return;
       dispatch(verifyUser(user));
+      const emailVerifyNotification: NotificationInterface = {
+        id: uuid(),
+        message: "Profile is now verified",
+        type: "info",
+        duration: 2000,
+      };
+      dispatch(pushNotification(emailVerifyNotification));
     }
   }, [auth.currentUser?.emailVerified]);
 
   return (
     <Router>
       <div className="container">
-        <div className="container__notifications">
-          {notifications.map((notification) => (
-            <Notification notification={notification} key={notification.id} />
-          ))}
-        </div>
+        {notifications.length > 0 && (
+          <div className="container__notifications">
+            {notifications.map((notification) => (
+              <Notification notification={notification} key={notification.id} />
+            ))}
+          </div>
+        )}
         <Header />
         <div className="container__main">
           <Switch>

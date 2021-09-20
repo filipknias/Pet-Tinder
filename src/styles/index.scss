@@ -32,16 +32,18 @@ a {
     left: 0;
     padding: 1rem; 
     height: 400px; 
-    @media (max-width: $breakpoint-sm) {
+    @media (max-width: $breakpoint-lg) {
       position: absolute;
       left: 0;
       top: 0;
       width: 100%;
+      justify-content: flex-start;
+      z-index: 10;
+      padding: 1rem 0;
     }
   }
   @media (max-width: $breakpoint-sm) {
     width: 100%;
-    min-height: 100vh;
     padding: 1rem 0.8rem;
   }
   .container__main {
@@ -49,8 +51,5 @@ a {
     margin: 1.5rem auto;
     flex: 1;
     @include flex(center, space-between, column);
-    @media (max-width: $breakpoint-sm) {
-      margin-bottom: 0;
-    }
   }
 }

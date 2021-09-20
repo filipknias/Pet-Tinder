@@ -15,7 +15,7 @@ export const pushNotification = (notification: Notification) => async (dispatch:
   }, notification.duration);
 };
 
-export const deleteNotification = (id: number) => async (dispatch: Dispatch<uiTypes.UiActionTypes>) => {
+export const deleteNotification = (id: string) => async (dispatch: Dispatch<uiTypes.UiActionTypes>) => {
   dispatch({
     type: uiTypes.DELETE_NOTIFICATION,
     payload: id,

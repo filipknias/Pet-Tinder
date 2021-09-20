@@ -1,4 +1,5 @@
 import { Token, StorageToken } from "../types/global";
+import { v4 as uuid } from 'uuid';
 
 export const formatToken = (token: Token): StorageToken => {
   return {

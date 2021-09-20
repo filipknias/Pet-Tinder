@@ -1,4 +1,5 @@
 import * as authTypes from "../types/authTypes";
+import * as uiTypes from "../types/uiTypes";
 import User from "../../models/User";
 import { 
   createUserWithEmailAndPassword, 
@@ -29,6 +30,8 @@ import { Dispatch } from "redux";
 import routes from "../../utilities/routes";
 import { Credentials } from "../../pages/Auth/EditProfile";
 import { formatErrorMessage } from "../../utilities/helpers";
+import { Notification } from "../../types/global";
+import { v4 as uuid } from "uuid";
 type History = ReturnType<typeof useHistory>;
 
 const formatDisplayName = (email: string): string => {
@@ -219,7 +222,7 @@ export const editProfile = (email: string, displayName: string, credentials: Cre
   }
 };
 
-export const deleteUser = (uid: string, history: History, credentials: Credentials) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+export const deleteUser = (uid: string, history: History, credentials: Credentials) => async (dispatch: Dispatch<authTypes.AuthActionTypes|uiTypes.UiActionTypes>) => {
   try {
     if (auth.currentUser === null) return;
     if (credentials.email === null || credentials.password === null) return;
@@ -241,6 +244,17 @@ export const deleteUser = (uid: string, history: History, credentials: Credentia
     
     dispatch({ type: authTypes.DELETE_USER_SUCCESS });
     history.push(routes.index);
+
+    const deleteUserNotification: Notification = {
+      id: uuid(),
+      message: "Profile has been deleted",
+      type: "success",
+      duration: 2000,
+    };
+    dispatch({
+      type: uiTypes.PUSH_NOTIFICATION,
+      payload: deleteUserNotification,
+    });
   } catch (err: any) {
     console.log(err);
     dispatch({
@@ -260,7 +274,7 @@ export const signInWithProvider = (provider: AuthProvider, history: History) => 
       member_since: timestamp,
       verified: user.emailVerified,
     };
-    console.log(userObject);
+
     // Add user to firestore
     await addDoc(collection(firestore, "users"), userObject);
     // Set in state

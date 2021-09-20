@@ -13,8 +13,7 @@
   color: $fontColor;
   border-radius: $tinderCard-border-radius;
   @media (max-width: $breakpoint-sm) {
-    height: 100%;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.3rem;
   }
 }
 

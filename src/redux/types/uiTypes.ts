@@ -10,7 +10,7 @@ interface PushNotificationAction {
 };
 interface DeleteNotificationAction {
   type: typeof DELETE_NOTIFICATION;
-  payload: number;
+  payload: string;
 };
 interface ClearOutAction {
   type: typeof CLEAR_OUT;

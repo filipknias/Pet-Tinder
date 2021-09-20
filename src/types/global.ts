@@ -32,7 +32,7 @@ export interface AuthFeedback {
 
 type NotificationType = "success" | "fail" | "info";
 export interface Notification {
-  id: number;
+  id: string;
   type: NotificationType;
   message: string;
   duration: number;

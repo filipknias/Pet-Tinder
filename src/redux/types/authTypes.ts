@@ -31,47 +31,47 @@ export const MARK_USER_VERIFIED = "MARK_USER_VERIFIED";
 
 export const CLEAR_OUT = "CLEAR_OUT";
 
-export interface AuthStartAction { 
+interface AuthStartAction { 
   type: typeof AUTH_START; 
 };
-export interface AuthSuccessAction { 
+interface AuthSuccessAction { 
   type: typeof AUTH_SUCCESS;
   payload: User;
 };
-export interface AuthFailAction { 
+interface AuthFailAction { 
   type: typeof AUTH_FAIL;
   payload: string;
 };
 
-export interface SignInWithProviderSuccess {
+interface SignInWithProviderSuccess {
   type: typeof SIGN_IN_WITH_PROVIDER_SUCCESS;
   payload: User;
 };
-export interface SignInWithProviderFail {
+interface SignInWithProviderFail {
   type: typeof SIGN_IN_WITH_PROVIDER_FAIL;
   payload: string;
 };
 
-export interface VerifyStartAction { 
+interface VerifyStartAction { 
   type: typeof VERIFY_START;
 };
-export interface VerifySuccessAction { 
+interface VerifySuccessAction { 
   type: typeof VERIFY_SUCCESS; 
   payload: string;
 };
-export interface VerifyFailAction { 
+interface VerifyFailAction { 
   type: typeof VERIFY_FAIL; 
   payload: string;
 };
 
-export interface ResetPasswordStart { 
+interface ResetPasswordStart { 
   type: typeof RESET_PASSWORD_START;
 };
-export interface ResetPasswordSuccess { 
+interface ResetPasswordSuccess { 
   type: typeof RESET_PASSWORD_SUCCESS;  
   payload: string;
 };
-export interface ResetPasswordFail { 
+interface ResetPasswordFail { 
   type: typeof RESET_PASSWORD_FAIL; 
   payload: string;
 };
@@ -80,49 +80,49 @@ interface DataToEdit {
   email?: string,
   displayName?: string;
 };
-export interface UpdateUserStart { 
+interface UpdateUserStart { 
   type: typeof UPDATE_USER_START;
 };
-export interface UpdateUserSuccess { 
+interface UpdateUserSuccess { 
   type: typeof UPDATE_USER_SUCCESS; 
   payload: {
     message: string;
     data: DataToEdit;
   }; 
 };
-export interface UpdateUserFail { 
+interface UpdateUserFail { 
   type: typeof UPDATE_USER_FAIL;  
   payload: string;
 };
 
-export interface LogoutStartAction {
+interface LogoutStartAction {
   type: typeof LOGOUT_USER_START; 
 };
-export interface LogoutSuccessAction {
+interface LogoutSuccessAction {
   type: typeof LOGOUT_USER_SUCCESS; 
 };
-export interface LogoutFailAction {
+interface LogoutFailAction {
   type: typeof LOGOUT_USER_FAIL; 
   payload: string; 
 };
 
-export interface DeleteUserStart {
+interface DeleteUserStart {
   type: typeof DELETE_USER_START; 
 };
-export interface DeleteUserSuccess {
+interface DeleteUserSuccess {
   type: typeof DELETE_USER_SUCCESS; 
 };
-export interface DeleteUserFail {
+interface DeleteUserFail {
   type: typeof DELETE_USER_FAIL; 
   payload: string; 
 };
 
 
-export interface MarkUserVerified {
+interface MarkUserVerified {
   type: typeof MARK_USER_VERIFIED;
 };
 
-export interface ClearOutAction {
+interface ClearOutAction {
   type: typeof CLEAR_OUT; 
 };
 

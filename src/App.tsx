@@ -22,23 +22,37 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { verifyUser } from "./redux/actions/authActions";
 import { getToken } from "./redux/actions/petsActions";
+import { pushNotification } from "./redux/actions/uiActions";
 import useFirestore from "./hooks/useFirestore";
+import Notification from "./components/Notification/Notification";
+import { Notification as NotificationInterface } from "./types/global";
+import { formatErrorMessage } from './utilities/helpers';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
+  const { notifications } = useSelector((state: RootState) => state.uiReducer);
   const { getQueriedItems }  = useFirestore(firestore);
 
   const getUserAndSetInState = async (uid: string) => {
-    const userDocRef = collection(firestore, "users");
-    const userQuery = where("uid", "==", uid);
-    const dbUser = await getQueriedItems(userDocRef, userQuery);
-    
-    // TODO: try catch block
-    dispatch({
-      type: authTypes.AUTH_SUCCESS,
-      payload: dbUser[0]
-    });
+    try {
+      const userDocRef = collection(firestore, "users");
+      const userQuery = where("uid", "==", uid);
+      const dbUser = await getQueriedItems(userDocRef, userQuery);
+
+      dispatch({
+        type: authTypes.AUTH_SUCCESS,
+        payload: dbUser[0]
+      });
+    } catch (err: any) {
+      const errorNotification: NotificationInterface = {
+        id: 1,
+        message: formatErrorMessage(err.code),
+        type: "fail",
+        duration: 1500,
+      };
+      dispatch(pushNotification(errorNotification));
+    }
   };  
 
   useEffect(() => {
@@ -60,6 +74,11 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="container">
+        <div className="container__notifications">
+          {notifications.map((notification) => (
+            <Notification notification={notification} key={notification.id} />
+          ))}
+        </div>
         <Header />
         <div className="container__main">
           <Switch>

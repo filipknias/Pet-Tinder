@@ -1,0 +1,67 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    margin-top: 10px;
+  }
+  to { 
+    opacity: 1; 
+    margin-top: 0;
+  }
+}
+
+.notification {
+  @include flex(center, flex-start);
+  background-color: $white;
+  padding: 1rem 1.4rem;
+  width: 400px;
+  height: 80px;
+  border-radius: 10px;
+  cursor: pointer;
+  animation: fadeIn 0.4s;
+  box-shadow: $block-box-shadow;
+  transition: transform 0.4s ease-in-out;
+  &:hover {
+    transform: scale(0.97);
+  }
+  @media (max-width: $breakpoint-sm) {
+    padding: 0.7rem 1rem;
+    height: 70px;
+    width: 100%;
+  }
+  &.notification--success {
+    border-left: 5px solid $green;
+    .notification__icon {
+      color: $green;
+    }
+  }
+  &.notification--fail {
+    border-left: 5px solid $red;
+    .notification__icon {
+      color: $red;
+    }
+  }
+  &.notification--info {
+    border-left: 5px solid $blue;
+    .notification__icon {
+      color: $blue;
+    }
+  }
+  .notification__icon {
+    margin-right: 1rem;
+    font-size: 2.2rem;
+    @media (max-width: $breakpoint-sm) {
+      font-size: 2rem;
+    }
+  }
+  .notification__message {
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+    color: $black;
+    @media (max-width: $breakpoint-sm) {
+      font-size: 1.2rem;
+    }
+  }
+}

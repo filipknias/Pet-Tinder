@@ -28,33 +28,11 @@ import { useHistory } from "react-router-dom";
 import { Dispatch } from "redux";
 import routes from "../../utilities/routes";
 import { Credentials } from "../../pages/Auth/EditProfile";
+import { formatErrorMessage } from "../../utilities/helpers";
 type History = ReturnType<typeof useHistory>;
 
 const formatDisplayName = (email: string): string => {
   return email.split("@")[0];
-};
-
-const formatErrorMessage = (errorCode: string): string => {
-  switch (errorCode) {
-    case "auth/email-already-in-use" || "auth/email-already-exists": {
-      return "Email already in use";
-    };
-    case "auth/weak-password" || "auth/invalid-password": {
-      return "Password is too weak";
-    };
-    case "auth/invalid-email" : {
-      return "E-mail must be valid";
-    };
-    case "auth/wrong-password" || "auth/user-not-found": {
-      return "Wrong e-mail or password"
-    };
-    case "auth/user-mismatch": {
-      return "Wrong user credentials";
-    };
-    default: {
-      return "Something went wrong";
-    };
-  };
 };
 
 export const registerUser = (email: string, password: string, confirmPassword: string, history: History) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {

@@ -16,28 +16,28 @@ interface PetsApiResponse {
   pagination: Pagination,
 };
 
-export interface PetsStartAction {
+interface PetsStartAction {
   type: typeof PETS_START,
 };
-export interface PetsSuccessAction {
+interface PetsSuccessAction {
   type: typeof PETS_SUCCESS,
   payload: PetsApiResponse,
 };
-export interface PetsFailAction { 
+interface PetsFailAction { 
   type: typeof PETS_FAIL, 
 };
 
-export interface TokenStartAction {
+interface TokenStartAction {
   type: typeof TOKEN_START,
 };
-export interface TokenSuccessAction {
+interface TokenSuccessAction {
   type: typeof TOKEN_SUCCESS,
   payload: StorageToken,
 };
-export interface TokenFailAction {
+interface TokenFailAction {
   type: typeof TOKEN_FAIL,
 };
-export interface NextPageAction {
+interface NextPageAction {
   type: typeof NEXT_PAGE,
   payload: number,
 }

@@ -29,3 +29,11 @@ export interface AuthFeedback {
   type: AuthFeedbackType;
   message: string;
 }
+
+type NotificationType = "success" | "fail" | "info";
+export interface Notification {
+  id: number;
+  type: NotificationType;
+  message: string;
+  duration: number;
+};

@@ -1,8 +1,13 @@
 @import "../../styles/variables.scss";
 @import "../../styles/mixins.scss";
 
+@keyframes fadeIn {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
 .modal {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -10,6 +15,7 @@
   background-color: $modal-bg;
   z-index: 10;
   display: none;
+  animation: fadeIn 0.2s;
   &.modal--open {
     @include flex(center, center);
   }
@@ -21,9 +27,10 @@
     min-width: 300px;
     min-height: 300px;
     max-width: 90%;
-    max-height: 60%;
+    max-height: 90%;
     @media (max-width: $breakpoint-sm) {
       padding: 1.5rem 1rem;
+      width: 100%;
     }
   }
 }

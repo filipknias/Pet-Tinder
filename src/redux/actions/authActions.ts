@@ -249,7 +249,6 @@ export const deleteUser = (uid: string, history: History, credentials: Credentia
       id: uuid(),
       message: "Profile has been deleted",
       type: "success",
-      duration: 2000,
     };
     dispatch({
       type: uiTypes.PUSH_NOTIFICATION,

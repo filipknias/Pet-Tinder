@@ -7,12 +7,6 @@ export const pushNotification = (notification: Notification) => async (dispatch:
     type: uiTypes.PUSH_NOTIFICATION,
     payload: notification,
   });
-  setTimeout(() => {
-    dispatch({
-      type: uiTypes.DELETE_NOTIFICATION,
-      payload: notification.id,
-    });
-  }, notification.duration);
 };
 
 export const deleteNotification = (id: string) => async (dispatch: Dispatch<uiTypes.UiActionTypes>) => {

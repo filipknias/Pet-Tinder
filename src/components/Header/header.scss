@@ -1,11 +1,14 @@
 @import "../../styles/mixins";
 @import "../../styles/variables";
 
-$headerBreakpointFontSize: 1.5rem;
+$headerBreakpointFontSize: 1.8rem;
 
 .header {
   @include flex(center, space-between);
   width: 100%;
+  @media (max-width: $breakpoint-sm) {
+    display: block;
+  }
   .header__group {
       .header__group__container {
         @include flex(center, center);
@@ -27,15 +30,18 @@ $headerBreakpointFontSize: 1.5rem;
     }
     .header__group__container__poweredby {
       @media (max-width: $breakpoint-sm) {
-        font-size: 0.8rem;
+        font-size: 1rem;
+        text-align: center;
       }
     }
   }
   .header__buttons {
     @include flex(center, flex-end);
+    gap: 1rem;
     flex: 1;
-    & > div {
-      margin-left: 1rem;
+    @media (max-width: $breakpoint-sm) {
+      margin-top: 1rem;
+      justify-content: space-around;
     }
   }
 }

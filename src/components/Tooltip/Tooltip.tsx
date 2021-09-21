@@ -10,7 +10,7 @@ interface Props {
 
 const Tooltip: React.FC<Props> = ({ children, text, placement }) => {
   return (
-    <div className={`tooltip tooltip--placement-${placement}`} data-tooltip={text}>
+    <div className={`tooltip ${placement ? `tooltip--placement-${placement}` : ""}`} data-tooltip={text}>
       {children}
     </div>
   )

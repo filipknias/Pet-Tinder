@@ -30,4 +30,22 @@
   &.roundedButton--icon-green { @include iconColor($green); }
 
   &.roundedButton--icon-yellow { @include iconColor($yellow); }
+
+  &.roundedButton--badge {
+    &:after {
+      content: attr(data-badge);
+      width: 10px;
+      height: 10px;
+      font-size: 0.9rem;
+      font-family: $font-secondary;
+      border-radius: 50%;
+      background-color: $red;
+      color: $white;
+      @include flex(center, center);
+      padding: 0.8rem;
+      position: absolute;
+      left: -10px;
+      bottom: -12px;
+    }
+  }
 }

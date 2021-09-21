@@ -24,7 +24,6 @@ import { verifyUser } from "./redux/actions/authActions";
 import { getToken } from "./redux/actions/petsActions";
 import { pushNotification } from "./redux/actions/uiActions";
 import useFirestore from "./hooks/useFirestore";
-import Notification from "./components/Notification/Notification";
 import { Notification as NotificationInterface } from "./types/global";
 import { formatErrorMessage } from './utilities/helpers';
 import { v4 as uuid } from "uuid";
@@ -32,7 +31,6 @@ import { v4 as uuid } from "uuid";
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
-  const { notifications } = useSelector((state: RootState) => state.uiReducer);
   const { getQueriedItems }  = useFirestore(firestore);
 
   const getUserAndSetInState = async (uid: string) => {
@@ -50,7 +48,6 @@ const App: React.FC = () => {
         id: uuid(),
         message: `Signed in as ${dbUser[0].email}`,
         type: "info",
-        duration: 2000,
       };
       dispatch(pushNotification(userNotification));
     } catch (err: any) {
@@ -58,7 +55,6 @@ const App: React.FC = () => {
         id: uuid(),
         message: formatErrorMessage(err.code),
         type: "fail",
-        duration: 1500,
       };
       dispatch(pushNotification(errorNotification));
     }
@@ -80,8 +76,7 @@ const App: React.FC = () => {
       const emailVerifyNotification: NotificationInterface = {
         id: uuid(),
         message: "Profile is now verified",
-        type: "info",
-        duration: 2000,
+        type: "info"
       };
       dispatch(pushNotification(emailVerifyNotification));
     }
@@ -90,13 +85,6 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="container">
-        {notifications.length > 0 && (
-          <div className="container__notifications">
-            {notifications.map((notification) => (
-              <Notification notification={notification} key={notification.id} />
-            ))}
-          </div>
-        )}
         <Header />
         <div className="container__main">
           <Switch>

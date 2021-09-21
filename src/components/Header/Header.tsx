@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "./header.scss";
 import RoundedButton from "../RoundedButton/RoundedButton";
 import Tooltip from "../Tooltip/Tooltip";
 import { Colors } from "../../types/global";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaw, faHeart, faUserTimes, faUserCheck } from '@fortawesome/free-solid-svg-icons';
+import { faPaw, faHeart, faUserTimes, faUserCheck, faBell } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import routes from "../../utilities/routes";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
+import NotificationsModal from '../NotificationsModal/NotificationsModal';
 
 const Header: React.FC = () => {
+  const [notificationsModalOpen, setNotificationsModalOpen] = useState<boolean>(false);
   const { isAuth } = useSelector((state: RootState) => state.authReducer);
+  const { notifications } = useSelector((state: RootState) => state.uiReducer);
 
   return (
     <div className="header">
@@ -38,6 +41,16 @@ const Header: React.FC = () => {
               <FontAwesomeIcon icon={faHeart} />
             </RoundedButton>
           </Tooltip>
+          <Tooltip text="Notifications">
+            <RoundedButton 
+              color={Colors.blue} 
+              style={{ fontSize: "1rem", paddingLeft: "0.9rem", paddingRight: "0.9rem" }}
+              badge={notifications.length > 0 ? notifications.length.toString() : undefined}
+              onClick={() => setNotificationsModalOpen(!notificationsModalOpen)}
+            > 
+              <FontAwesomeIcon icon={faBell} />
+            </RoundedButton>
+          </Tooltip>
           <Tooltip text={isAuth ? "Profile" : "Sign In"}>
             <Link to={isAuth ? routes.profile : routes.signIn}>
               <RoundedButton 
@@ -48,6 +61,7 @@ const Header: React.FC = () => {
               </RoundedButton>
             </Link>
           </Tooltip>
+          <NotificationsModal open={notificationsModalOpen} setOpen={setNotificationsModalOpen} />
         </div>
     </div>
   )

@@ -1,20 +1,58 @@
+import { query, collection, getDocs } from "firebase/firestore";
+import { RootState } from "../store";
+import { where } from "firebase/firestore";
 import { StorageToken } from "../../types/global";
+import { Pet } from "../../types/api";
 import { Dispatch } from "redux";
 import * as petsTypes from "../types/petsTypes";
 import { formatToken, isTokenExpired } from "../../utilities/helpers";
+import { firestore } from "../../utilities/firebase";
 import axios from "axios";
 const PROXY_SERVER = "https://thingproxy.freeboard.io/fetch";
 const LOCAL_STORAGE_TOKEN_KEY = "PET_TINDER_TOKEN";
 
-export const getPets = (page: number = 1) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>) => {
+export const getPets = (page: number = 1) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
   try {
     dispatch({ type: petsTypes.PETS_START });
-    const response = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?page=${page}`);
+    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?page=${page}`);
+    // Get user uid
+    const user = getState().authReducer.user;
+    if (user === null) return;
+    // Get all likes and rejects pets id's
+    // Likes
+    const likedPetsQuery = where("user_id", "==", user.uid);
+    const queryLikes = query(collection(firestore, "likes"), likedPetsQuery); 
+    const likesQuerySnap = await getDocs(queryLikes);
+    // Rejects
+    const rejectsPetsQuery = where("user_id", "==", user.uid);
+    const queryRejects = query(collection(firestore, "rejects"), rejectsPetsQuery); 
+    const rejectsQuerySnap = await getDocs(queryRejects);
+
+    const petsIds: number[] = [];
+    rejectsQuerySnap.forEach((doc) => {
+      if (doc.exists()) {
+        petsIds.push(doc.data().pet_id);
+      }
+    }); 
+    likesQuerySnap.forEach((doc) => {
+      if (doc.exists()) {
+        petsIds.push(doc.data().pet_id);
+      }
+    }); 
+
+    // Filter pets
+    const filteredPets = animals.filter((animal: Pet) => {
+      if (!petsIds.some((id) => id === animal.id)) return animal; 
+    });
+    // Set state  
     dispatch({
       type: petsTypes.PETS_SUCCESS,
       payload: {
-        pets: response.data.animals,
-        pagination: response.data.pagination,
+        pets: animals,
+        pagination: {
+          ...pagination,
+          count_per_page: filteredPets.length,
+        },
       },
     });
   } catch (err: any) {

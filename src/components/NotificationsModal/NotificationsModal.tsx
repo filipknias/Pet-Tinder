@@ -46,11 +46,10 @@ const NotificationsModal: React.FC<Props> = ({ open, setOpen }) => {
           )}
           </>
         </div>
-        <button className="notificationsModal__closeButton">
+        <button className="notificationsModal__closeButton" onClick={handleClearAll}>
           <FontAwesomeIcon 
             icon={faHandSparkles} 
             className="notificationsModal__closeButton__icon" 
-            onClick={handleClearAll}
           />
           Clear all
         </button>

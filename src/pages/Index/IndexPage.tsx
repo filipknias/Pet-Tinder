@@ -16,14 +16,22 @@ import { RootState } from "../../redux/store";
 import { isTokenExpired } from '../../utilities/helpers';
 import { Notification } from "../../types/global";
 import { v4 as uuid } from "uuid";
+import Like from "../../models/Like";
+import Reject from "../../models/Reject";
+import useFirestore from "../../hooks/useFirestore";
+import { firestore } from "../../utilities/firebase";
+import { where } from "firebase/firestore";
 
 const IndexPage: React.FC = () => {
   const [currentPetIndex, setCurrentPetIndex] = useState<number>(0);
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
+  const [likedPetsCounter, setLikedPetsCounter] = useState<number>(0);
+  const [rejectedPetsCounter, setRejectedPetsCounter] = useState<number>(0);
   const cardRef = React.createRef<HTMLDivElement>();
   const { pets, pagination, token, isError, loading } = useSelector((state: RootState) => state.petsReducer);
   const { user } = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch();
+  const { saveItem, getQueriedItems } = useFirestore(firestore);
   const roundedButtonStyle = {
     fontSize: "2.2rem", 
     padding: "1rem",
@@ -39,11 +47,25 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     if (pagination === null) return;
     dispatch(getPets(pagination.current_page));
+
+    // Push info notification
+    if (pagination.current_page > 1) {
+      const infoNotification: Notification = {
+        id: uuid(),
+        message: `You have liked ${likedPetsCounter} pets and rejected ${rejectedPetsCounter}`,
+        type: "info",
+      };
+      dispatch(pushNotification(infoNotification));
+    } 
+
+    // Reset state
+    setLikedPetsCounter(0);
+    setRejectedPetsCounter(0);
     setCurrentPetIndex(0);
   }, [pagination?.current_page]);
 
   useEffect(() => {
-    if (loading === true || isError === true) {
+    if (loading || isError) {
       setButtonsDisabled(true);
     } else {
       setButtonsDisabled(false);
@@ -60,13 +82,30 @@ const IndexPage: React.FC = () => {
     }
   };
 
-  const hasNextPage = (): boolean => {
+  const isNextPage = (): boolean => {
     if (currentPetIndex + 1 === pagination?.count_per_page) return true;
     else return false;
   }
 
   const handleAsyncButtonClick = (asyncCallback: () => void) => {
-    
+    if (pagination === null || token === null) return;
+    setButtonsDisabled(true);
+    // Check if token is expired
+    if (isTokenExpired(token)) {
+      dispatch(getToken());
+    } else {
+      makeCardAnimation(() => {
+        // Make DB request
+        asyncCallback();
+        // Check for next page
+        if (isNextPage()) {
+          setNextPage();
+        } else {
+          setCurrentPetIndex((prevIndex) => prevIndex + 1);
+        }
+        setButtonsDisabled(false);
+      });
+    }
   }
 
   const setNextPage = (): void => {
@@ -84,66 +123,49 @@ const IndexPage: React.FC = () => {
     });
   }
   
-
   const handleLikeClick = () => {
-    if (pagination === null || token === null) return;
-    setButtonsDisabled(true);
-    // Check if token is expired
-    if (isTokenExpired(token)) {
-      dispatch(getToken());
-    }
-
-    // if (user && !user.verified) {
-    //   const verifyNotification: Notification = {
-    //     id: uuid(),
-    //     message: "You need to verify e-mail before you continue",
-    //     type: "fail",
-    //     duration: 1500,
-    //   };
-    //   dispatch(pushNotification(verifyNotification));
-    //   setButtonsDisabled(false);
-    //   return;
-    // } 
-    
-    makeCardAnimation(() => {
-      // TODO: save in DB
-      // Check for next page
-      if (hasNextPage()) {
-        setNextPage();
-      } else {
-        setCurrentPetIndex((prevIndex) => prevIndex + 1);
+    handleAsyncButtonClick(async () => {
+      if (user === null) return;
+      const likeObject: Like = {
+        user_id: user.uid,
+        pet_id: pets[currentPetIndex].id,
       }
-      setButtonsDisabled(false);
+      const petsQuery = where("pet_id", "==", pets[currentPetIndex].id);
+      const petsFromDb = await getQueriedItems("likes", petsQuery);
+      if (petsFromDb && petsFromDb.length > 0) return;
+      await saveItem("likes", likeObject);
+      setLikedPetsCounter((prevCounter) => prevCounter + 1);
     });
-    
   }
 
   const handleDislikeClick = () => {
-    if (pagination === null || token === null) return;
-    setButtonsDisabled(true);
-    if (isTokenExpired(token)) {
-      dispatch(getToken());
-    }
-    makeCardAnimation(() => {
-        // TODO: save in DB
-        // Check for next page
-        if (hasNextPage()) {
-          setNextPage();
-        } else {
-          setCurrentPetIndex((prevIndex) => prevIndex + 1);
-        }
-        setButtonsDisabled(false);
+    handleAsyncButtonClick(async () => {
+      if (user === null) return;
+      const rejectObject: Reject = {
+        user_id: user.uid,
+        pet_id: pets[currentPetIndex].id,
+      }
+      const petsQuery = where("pet_id", "==", pets[currentPetIndex].id);
+      const petsFromDb = await getQueriedItems("rejects", petsQuery);
+      if (petsFromDb && petsFromDb.length > 0) return;
+      await saveItem("rejects", rejectObject);
+      setRejectedPetsCounter((prevCounter) => prevCounter + 1);
     });
   }
 
   const handleRefresh = async () => {
     if (loading) return;
     setButtonsDisabled(true);
-    if (token !== null && isTokenExpired(token)) {
+    // Get token
+    if (token && isTokenExpired(token)) {
       dispatch(getToken());
     }
+    // Get pets
     dispatch(getPets());
+    // Reset state
     setCurrentPetIndex(0);
+    setLikedPetsCounter(0);
+    setRejectedPetsCounter(0);
     setButtonsDisabled(false);
   };
 

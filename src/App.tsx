@@ -15,7 +15,7 @@ import {
 import routes from "./utilities/routes";
 import { auth, firestore } from "./utilities/firebase"; 
 import * as authTypes from "./redux/types/authTypes";
-import { collection, where } from "firebase/firestore"; 
+import { where } from "firebase/firestore"; 
 import GuestRoute from './components/Routes/GuestRoute';
 import ProtectedRoute from './components/Routes/ProtectedRoute';
 import { useDispatch, useSelector } from "react-redux";
@@ -35,9 +35,9 @@ const App: React.FC = () => {
 
   const getUserAndSetInState = async (uid: string) => {
     try {
-      const userDocRef = collection(firestore, "users");
       const userQuery = where("uid", "==", uid);
-      const dbUser = await getQueriedItems(userDocRef, userQuery);
+      const dbUser = await getQueriedItems("users", userQuery);
+      if (!dbUser) return;
 
       dispatch({
         type: authTypes.AUTH_SUCCESS,

@@ -4,7 +4,7 @@
 .notificationsModal {
   @include flex(center, space-between, column);
   width: 450px;
-  min-height: 600px;
+  min-height: 500px;
   gap: 1rem;
   @media (max-width: $breakpoint-sm) {
     width: auto;
@@ -18,7 +18,7 @@
     flex: 1;
     width: 100%;
     @include flex(center, flex-start, column);
-    gap: 1rem;
+    gap: 1.8rem;
     overflow-y: auto;
     @include hideScrollbar;
     &.notificationsModal__container--empty {
@@ -28,20 +28,20 @@
       @include flex(center, center, column);
       background-color: $gray;
       border-radius: 20px;
-      padding: 3rem 2rem;
+      padding: 2rem;
       height: 300px;
       .notificationsModal__container__empty__header {
-        font-size: 1.6rem;
-        color: $dark-gray;
+        font-size: 1.4rem;
+        font-weight: $font-weight-normal;
+        color: $light-gray;
         text-align: center;
-        letter-spacing: 0.5px;
         @media (max-width: $breakpoint-sm) {
           font-size: 1.3rem;
         }
       }
       .notificationsModal__container__empty__icon {
-        color: $dark-gray;
-        font-size: 3.5rem;
+        color: $light-gray;
+        font-size: 3.3rem;
         margin-bottom: 1rem;
         @media (max-width: $breakpoint-sm) {
           font-size: 3rem;

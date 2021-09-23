@@ -5,14 +5,16 @@ import {
   getDocs, 
   DocumentData, 
   QueryConstraint, 
-  CollectionReference,
+  addDoc,
+  collection,
 } from "firebase/firestore";
 
 const useFirestore = (defaultFirestore: Firestore) => {
   const [firestore, setFirestore] = useState<Firestore|null>(defaultFirestore);
 
-  const getQueriedItems = async (collectionRef: CollectionReference, query: QueryConstraint) => {
-    const q = firebaseQuery(collectionRef, query); 
+  const getQueriedItems = async (collectionName: string, query: QueryConstraint) => {
+    if (firestore === null) return;
+    const q = firebaseQuery(collection(firestore, collectionName), query); 
     const querySnap = await getDocs(q);
     const items: DocumentData[] = [];
     querySnap.forEach((doc) => {
@@ -21,7 +23,13 @@ const useFirestore = (defaultFirestore: Firestore) => {
     return items;
   };
 
-  return { getQueriedItems };
+  const saveItem = async (collectionName: string, item: object) => {
+    if (firestore === null) return;
+    const docRef = await addDoc(collection(firestore, collectionName), item);
+    return docRef.id;
+  };
+
+  return { getQueriedItems, saveItem };
 };
 
 export default useFirestore;

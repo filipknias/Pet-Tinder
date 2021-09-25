@@ -36,3 +36,19 @@ export interface Notification {
   type: NotificationType;
   message: string;
 };
+
+export enum Age {
+  Baby = "baby",
+  Young = "young",
+  Adult = "adult",
+  Senior = "senior",
+}
+
+export interface Filters {
+  type: string;
+  coat:   string|null;
+  color:  string;
+  gender: string;
+  age: string;
+  location: string;
+}

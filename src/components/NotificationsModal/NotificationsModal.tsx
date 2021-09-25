@@ -25,9 +25,8 @@ const NotificationsModal: React.FC<Props> = ({ open, setOpen }) => {
   };
 
   return (
-    <Modal open={open} setOpen={setOpen}> 
+    <Modal open={open} setOpen={setOpen} header="Notifications"> 
       <div className="notificationsModal">
-        <h1 className="notificationsModal__title">Notifications</h1>
         <div 
           className={`notificationsModal__container ${notifications.length === 0 ? "notificationsModal__container--empty" : ""}`}
         >

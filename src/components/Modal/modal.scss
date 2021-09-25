@@ -19,18 +19,28 @@
   &.modal--open {
     @include flex(center, center);
   }
+  @media (max-width: $breakpoint-sm) {
+    padding: 1rem;
+  }
   .modal__container {
     border-radius: 10px;
     background-color: $white;
     color: $black;
     padding: 1.5rem;
-    min-width: 300px;
+    min-width: 450px;
     min-height: 300px;
-    max-width: 90%;
     max-height: 90%;
     @media (max-width: $breakpoint-sm) {
       padding: 1.5rem 1rem;
-      width: 100%;
+      min-width: 100%;
+    }
+    .modal__container__header {
+      font-size: 1.7rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.3rem;
+      @media (max-width: $breakpoint-sm) {
+        font-size: 1.5rem;
+      }
     }
   }
 }

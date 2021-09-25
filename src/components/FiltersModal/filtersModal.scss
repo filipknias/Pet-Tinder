@@ -1,0 +1,54 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.filtersForm {
+  @include flex(center, flex-start, column);
+  gap: 1rem;
+  min-height: 500px;
+  .filtersForm__formGroup {
+    width: 100%;
+    padding: 0.7rem 0;
+    @include flex(center, space-between);
+    .filtersForm__formGroup__label {
+      font-size: 1.5rem;
+      margin-right: 1.5rem;
+      @media (max-width: $breakpoint-sm) {
+        font-size: 1.2rem;
+        margin-right: 1rem;
+      }
+    }
+    .filtersForm__formGroup__select {
+      width: 350px;
+      padding: 0.3rem;
+      font-family: $font-secondary;
+      font-size: 1.3rem;
+      @media (max-width: $breakpoint-sm) {
+        width: 100%;
+        font-size: 1rem;
+      }
+    }
+  }
+  .filtersForm__submit{
+    @include buttonReset;
+    width: 100%;
+    background-color: $purple;
+    color: $white;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-family: $font-secondary;
+    transition: all 0.2s ease-in-out;
+    margin-top: 0.5rem;
+    @media (max-width: $breakpoint-sm) {
+      font-size: 1rem;
+    }
+    &:hover {
+      background-color: $dark-purple;
+    }
+    .form__submit__loading {
+      @include loadingSpinnerRotate;
+      font-size: 1.5rem;
+    }
+  }
+}

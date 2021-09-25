@@ -1,11 +1,12 @@
 import { Pet, Pagination } from "../../types/api";
-import { StorageToken } from "../../types/global";
+import { StorageToken, Filters } from "../../types/global";
 import * as petsTypes from "../types/petsTypes";
 
 export interface PetsState {
   pets: Pet[];
   pagination: Pagination|null;
   token: StorageToken|null;
+  filters: Filters|null;
   loading: boolean;
   isError: boolean;
 };
@@ -14,6 +15,7 @@ const initialState: PetsState = {
   pets: [],
   pagination: null,
   token: null,
+  filters: null,
   loading: false,
   isError: false,
 };
@@ -62,7 +64,19 @@ const petsReducer = (state: PetsState = initialState, action: petsTypes.PetsActi
         loading: false,
         isError: true,
       }
-    };  
+    };
+    case petsTypes.UPDATE_FILTERS: {
+      return {
+        ...state,
+        filters: action.payload,
+      }
+    };
+    case petsTypes.CLEAR_FILTERS: {
+      return {
+        ...state,
+        filters: null,
+      }
+    };
     case petsTypes.NEXT_PAGE: {
       if (state.pagination === null) return state;
       return {

@@ -4,15 +4,12 @@
 .notificationsModal {
   @include flex(center, space-between, column);
   width: 450px;
-  min-height: 550px;
+  height: 550px;
+  max-height: 550px;
   gap: 1rem;
   @media (max-width: $breakpoint-sm) {
     width: auto;
     min-height: 500px;
-  }
-  .notificationsModal__title {
-    font-size: 1.7rem;
-    letter-spacing: 0.3px;
   }
   .notificationsModal__container {
     flex: 1;

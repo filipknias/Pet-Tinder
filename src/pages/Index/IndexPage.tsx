@@ -21,12 +21,14 @@ import Reject from "../../models/Reject";
 import useFirestore from "../../hooks/useFirestore";
 import { firestore } from "../../utilities/firebase";
 import { where } from "firebase/firestore";
+import FiltersModal from '../../components/FiltersModal/FiltersModal';;
 
 const IndexPage: React.FC = () => {
   const [currentPetIndex, setCurrentPetIndex] = useState<number>(0);
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
   const [likedPetsCounter, setLikedPetsCounter] = useState<number>(0);
   const [rejectedPetsCounter, setRejectedPetsCounter] = useState<number>(0);
+  const [filtersModalOpen, setFiltersModalOpen] = useState<boolean>(false);
   const cardRef = React.createRef<HTMLDivElement>();
   const { pets, pagination, token, isError, loading } = useSelector((state: RootState) => state.petsReducer);
   const { user } = useSelector((state: RootState) => state.authReducer);
@@ -53,7 +55,7 @@ const IndexPage: React.FC = () => {
       const infoNotification: Notification = {
         id: uuid(),
         message: `You have liked ${likedPetsCounter} pets and rejected ${rejectedPetsCounter}`,
-        type: "info",
+        type: "success",
       };
       dispatch(pushNotification(infoNotification));
     } 
@@ -218,11 +220,13 @@ const IndexPage: React.FC = () => {
             <RoundedButton 
               color={Colors.purple} 
               style={roundedButtonStyle}
+              onClick={() => setFiltersModalOpen(true)}
             >
               <FontAwesomeIcon icon={faSortAmountUp} />
             </RoundedButton>
           </Tooltip>
         </div>
+        <FiltersModal open={filtersModalOpen} setOpen={setFiltersModalOpen} />
     </>
   )
 }

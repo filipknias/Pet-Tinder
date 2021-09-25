@@ -1,15 +1,18 @@
 import { query, collection, getDocs } from "firebase/firestore";
 import { RootState } from "../store";
 import { where } from "firebase/firestore";
-import { StorageToken } from "../../types/global";
+import { StorageToken, Filters } from "../../types/global";
 import { Pet } from "../../types/api";
 import { Dispatch } from "redux";
 import * as petsTypes from "../types/petsTypes";
 import { formatToken, isTokenExpired } from "../../utilities/helpers";
 import { firestore } from "../../utilities/firebase";
 import axios from "axios";
-const PROXY_SERVER = "https://thingproxy.freeboard.io/fetch";
-const LOCAL_STORAGE_TOKEN_KEY = "PET_TINDER_TOKEN";
+import { PROXY_SERVER, LOCAL_STORAGE_TOKEN_KEY } from "../../types/constants";
+
+const generateApiQuery = (filters: Filters) => {
+  
+};
 
 export const getPets = (page: number = 1) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
   try {

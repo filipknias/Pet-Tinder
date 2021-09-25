@@ -15,6 +15,7 @@ import {
 import routes from "./utilities/routes";
 import { auth, firestore } from "./utilities/firebase"; 
 import * as authTypes from "./redux/types/authTypes";
+import * as petsTypes from "./redux/types/petsTypes";
 import { where } from "firebase/firestore"; 
 import GuestRoute from './components/Routes/GuestRoute';
 import ProtectedRoute from './components/Routes/ProtectedRoute';
@@ -27,6 +28,7 @@ import useFirestore from "./hooks/useFirestore";
 import { Notification as NotificationInterface } from "./types/global";
 import { formatErrorMessage } from './utilities/helpers';
 import { v4 as uuid } from "uuid";
+import { LOCAL_STORAGE_FILTERS_KEY } from './types/constants';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -61,11 +63,20 @@ const App: React.FC = () => {
   };  
 
   useEffect(() => {
+    // Set user on state changed
     auth.onAuthStateChanged((user) => {
       if (user) {
         getUserAndSetInState(user.uid);
+        const filters = localStorage.getItem(LOCAL_STORAGE_FILTERS_KEY);
+        if (filters) {
+          dispatch({
+            type: petsTypes.UPDATE_FILTERS,
+            payload: JSON.parse(filters),
+          });
+        } 
       }
     });
+    // Get token
     dispatch(getToken());
   }, []);
 

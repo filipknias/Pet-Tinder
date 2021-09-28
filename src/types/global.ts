@@ -45,10 +45,23 @@ export enum Age {
 }
 
 export interface Filters {
-  type: string;
+  type: string|null;
   coat:   string|null;
-  color:  string;
-  gender: string;
-  age: string;
-  location: string;
+  color:  string|null;
+  gender: string|null;
+  age: string|null;
+  location: string|null;
+}
+
+export interface Types {
+  type:    string;
+  coats:   string[];
+  colors:  string[];
+  genders: string[];
+}
+
+export enum Gender {
+  Female = "Female",
+  Male = "Male",
+  Unknown = "Unknown",
 }

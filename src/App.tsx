@@ -65,19 +65,18 @@ const App: React.FC = () => {
   useEffect(() => {
     // Set user on state changed
     auth.onAuthStateChanged((user) => {
-      if (user) {
-        getUserAndSetInState(user.uid);
-        const filters = localStorage.getItem(LOCAL_STORAGE_FILTERS_KEY);
-        if (filters) {
-          dispatch({
-            type: petsTypes.UPDATE_FILTERS,
-            payload: JSON.parse(filters),
-          });
-        } 
-      }
+      if (user) getUserAndSetInState(user.uid); 
     });
     // Get token
     dispatch(getToken());
+    // Get filters
+    const filters = localStorage.getItem(LOCAL_STORAGE_FILTERS_KEY);
+    if (filters) {
+      dispatch({
+        type: petsTypes.UPDATE_FILTERS,
+        payload: JSON.parse(filters),
+      });
+    }
   }, []);
 
   useEffect(() => {

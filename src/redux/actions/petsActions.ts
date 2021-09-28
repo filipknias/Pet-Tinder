@@ -11,13 +11,18 @@ import axios from "axios";
 import { PROXY_SERVER, LOCAL_STORAGE_TOKEN_KEY } from "../../types/constants";
 
 const generateApiQuery = (filters: Filters) => {
-  
+  const keyValuePairs = Object.entries(filters).filter(([key, value]) => value !== null).map(([key, value]) => {
+    return `${key}=${value}`;
+  });
+  const queryString = keyValuePairs.join("&");
+  return queryString;
 };
 
-export const getPets = (page: number = 1) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
+export const getPets = (page: number = 1, filters: Filters) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
   try {
     dispatch({ type: petsTypes.PETS_START });
-    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?page=${page}`);
+    const queryParams = `page=${page}&${generateApiQuery(filters)}`;
+    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?${queryParams}`);
     // Get user uid
     const user = getState().authReducer.user;
     if (user === null) return;

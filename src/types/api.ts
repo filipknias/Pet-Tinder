@@ -102,27 +102,4 @@ export interface Next {
   href: string;
 }
 
-export interface Types {
-  name:    string;
-  coats:   string[];
-  colors:  string[];
-  genders: Gender[];
-  _links:  TypesLinks;
-}
-
-export interface TypesLinks {
-  self:   Breeds;
-  breeds: Breeds;
-}
-
-export interface Breeds {
-  href: string;
-}
-
-export enum Gender {
-  Female = "Female",
-  Male = "Male",
-  Unknown = "Unknown",
-}
-
 

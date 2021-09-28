@@ -1,83 +1,71 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./filtersModal.scss";
 import Modal from "../Modal/Modal";
-import { Types } from "../../types/api";
-import { Age, Filters } from "../../types/global";
-import { useSelector } from "react-redux";
-import AuthFeedback from '../AuthFormFeedback/AuthFeedback';
-import axios from "axios";
-import { PROXY_SERVER, LOCAL_STORAGE_FILTERS_KEY } from "../../types/constants";
+import { Age, Filters, Types } from "../../types/global";
+import { useSelector, useDispatch } from "react-redux";
+import { LOCAL_STORAGE_FILTERS_KEY, FILTER_TYPES } from "../../types/constants";
 import states from "../../assets/states.json";
 import { RootState } from "../../redux/store";
-import { formatErrorMessage } from "../../utilities/helpers";
+import * as petsTypes from "../../redux/types/petsTypes";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWindowRestore, faSave } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
-  const [availablePetTypes, setAvailablePetTypes] = useState<Types|null>(null);
-  const [selectedPetType, setSelectedPetType] = useState<string|null>(null);
-  const [filtersTypes, setFiltersTypes] = useState<Types[]>([]);
-  const [typesLoading, setTypesLoading] = useState<boolean>(false);
-  const [typesError, setTypesError] = useState<string|null>(null);
-  const ageSelectRef = useRef<HTMLSelectElement|null>(null);
-  const coatSelectRef = useRef<HTMLSelectElement|null>(null);
-  const colorSelectRef = useRef<HTMLSelectElement|null>(null);
-  const genderSelectRef = useRef<HTMLSelectElement|null>(null);
-  const stateSelectRef = useRef<HTMLSelectElement|null>(null);
+const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {  
+  const ANY_SELECT_VALUE = "Any";
   const { filters } = useSelector((state: RootState) => state.petsReducer);
-
-  const fetchFilterTypes = async () => {
-    try {
-      setTypesError(null);
-      setTypesLoading(true);
-      const { data } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/types`);
-      setFiltersTypes(data.types);
-      setSelectedPetType(data.types[0].name);
-      setTypesLoading(false);
-    } catch (err: any) {
-      console.log(err);
-      setTypesError(formatErrorMessage(err.code));
-      setTypesLoading(false);
-    }
-  };
+  const [filtersForSelectedType, setFiltersForSelectedType] = useState<Types|null>(null);
+  const [formValues, setFormValues] = useState<Filters>({
+    type: filters && filters.type ? filters.type : ANY_SELECT_VALUE,
+    age: filters && filters.age ? filters.age : ANY_SELECT_VALUE,
+    coat: filters && filters.coat ? filters.coat : ANY_SELECT_VALUE,
+    color: filters && filters.color ? filters.color : ANY_SELECT_VALUE,
+    gender: filters && filters.gender ? filters.gender : ANY_SELECT_VALUE,
+    location: filters && filters.location ? filters.location : ANY_SELECT_VALUE,
+  });
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchFilterTypes();
-  }, []);
-
-  useEffect(() => {
-    if (selectedPetType === null) return;
     // Set available filter types based on selected pet type
-    const types = filtersTypes.find((filterType) => {
-      return filterType.name === selectedPetType;
+    const types = FILTER_TYPES.find((filterType) => {
+      return filterType.type === formValues.type;
     });
     if (types) {
-      setAvailablePetTypes(types);
+      setFiltersForSelectedType(types);
     }
-  }, [selectedPetType, filtersTypes]);
+  }, [formValues.type]);
+
+  useEffect(() => {
+    setFormValues({
+      ...formValues,
+      age: null,
+      coat: null,
+      color: null,
+      gender: null,
+      location: null,
+    });
+  }, [filtersForSelectedType]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (ageSelectRef.current === null ||
-        coatSelectRef.current === null ||
-        colorSelectRef.current === null ||
-        genderSelectRef.current === null ||
-        stateSelectRef.current === null
-       ) return;
-    
-    if (selectedPetType === null) return;
+
     const filtersToSave: Filters = {
-      age: ageSelectRef.current.value,
-      coat: coatSelectRef.current.value,
-      color: colorSelectRef.current.value,
-      gender: genderSelectRef.current.value,
-      location: stateSelectRef.current.value,
-      type: selectedPetType,
+      type: formValues.type,
+      age: formValues.age,
+      coat: formValues.coat,
+      color: formValues.color,
+      gender: formValues.gender,
+      location: formValues.location,
     }
 
+    dispatch({
+      type: petsTypes.UPDATE_FILTERS,
+      payload: filtersToSave,
+    });
     localStorage.setItem(LOCAL_STORAGE_FILTERS_KEY, JSON.stringify(filtersToSave));
     setOpen(false);
   };  
@@ -86,24 +74,28 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
     return `${text[0].toUpperCase()}${text.slice(1)}`;
   };  
 
+  const handleReset = () => {
+    dispatch({ type: petsTypes.CLEAR_FILTERS });
+    setOpen(false);
+  };
+
   return (
     <Modal open={open} setOpen={setOpen} header="Filters">
       <form className="filtersForm" onSubmit={handleSubmit}>
-        {typesError && (
-          <AuthFeedback type="fail" message={typesError} />
-        )}
         <div className="filtersForm__formGroup">
           <label htmlFor="type" className="filtersForm__formGroup__label">Type</label>
           <select 
             id="type" 
             className="filtersForm__formGroup__select"
-            onChange={(e) => setSelectedPetType(e.target.value)}
-            disabled={typesLoading ? true : false}
-            defaultValue={filters ? filters.type : undefined}
+            onChange={
+              (e) => setFormValues({ ...formValues, type: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
+            }
+            defaultValue={formValues.type || ANY_SELECT_VALUE}
           >
-            {filtersTypes.map((type) => (
-              <option value={type.name} key={type.name}>
-                {type.name}
+            <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
+            {FILTER_TYPES.map(({ type }) => (
+              <option value={type} key={type}>
+                {type}
               </option>
             ))}
           </select>
@@ -113,10 +105,12 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
           <select 
             id="age" 
             className="filtersForm__formGroup__select" 
-            disabled={typesLoading ? true : false}
-            ref={ageSelectRef}
-            defaultValue={filters ? filters.age : undefined}
+            onChange={
+              (e) => setFormValues({ ...formValues, age: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
+            }
+            defaultValue={formValues.age || ANY_SELECT_VALUE}
           >
+              <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
               <option value={Age.Baby}>{capitalizeFirstLetter(Age.Baby)}</option>
               <option value={Age.Young}>{capitalizeFirstLetter(Age.Young)}</option>
               <option value={Age.Adult}>{capitalizeFirstLetter(Age.Adult)}</option>
@@ -128,11 +122,13 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
           <select 
             id="coat" 
             className="filtersForm__formGroup__select" 
-            disabled={typesLoading ? true : false} 
-            ref={coatSelectRef}
-            defaultValue={filters && filters.coat ? filters.coat : undefined}
+            onChange={
+              (e) => setFormValues({ ...formValues, coat: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
+            }
+            defaultValue={formValues.coat || ANY_SELECT_VALUE}
           >
-            {availablePetTypes && availablePetTypes.coats.map((coat) => (
+            <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
+            {filtersForSelectedType && filtersForSelectedType.coats.map((coat) => (
               <option value={coat} key={coat}>
                 {coat}
               </option>
@@ -144,11 +140,13 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
           <select 
             id="color" 
             className="filtersForm__formGroup__select" 
-            disabled={typesLoading ? true : false}
-            ref={colorSelectRef}
-            defaultValue={filters ? filters.color : undefined}
+            onChange={
+              (e) => setFormValues({ ...formValues, color: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
+            }
+            defaultValue={formValues.color || ANY_SELECT_VALUE}
           >
-            {availablePetTypes && availablePetTypes.colors.map((color) => (
+            <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
+            {filtersForSelectedType && filtersForSelectedType.colors.map((color) => (
               <option value={color} key={color}>
                 {color}
               </option>
@@ -160,11 +158,13 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
           <select 
             id="gender" 
             className="filtersForm__formGroup__select" 
-            disabled={typesLoading ? true : false}
-            ref={genderSelectRef}
-            defaultValue={filters ? filters.gender : undefined}
+            onChange={
+              (e) => setFormValues({ ...formValues, gender: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
+            }
+            defaultValue={formValues.gender || ANY_SELECT_VALUE}
           >
-            {availablePetTypes && availablePetTypes.genders.map((gender) => (
+            <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
+            {filtersForSelectedType && filtersForSelectedType.genders.map((gender) => (
               <option value={gender} key={gender}>
                 {gender}
               </option>
@@ -176,10 +176,12 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
           <select 
             id="state" 
             className="filtersForm__formGroup__select" 
-            disabled={typesLoading ? true : false}
-            ref={stateSelectRef}
-            defaultValue={filters ? filters.location : undefined}
+            onChange={
+              (e) => setFormValues({ ...formValues, location: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
+            }
+            defaultValue={formValues.location || ANY_SELECT_VALUE}
           >
+            <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
             {states.map((state) => (
               <option value={state.abbreviation} key={state.abbreviation}>
                 {state.name}
@@ -187,7 +189,23 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
             ))}
           </select>
         </div>
-        <button type="submit" className="filtersForm__submit">Save filters</button>
+        <div className="filtersForm__buttonsContainer">
+          <button 
+            type="button" 
+            className="filtersForm__buttonsContainer__button filtersForm__buttonsContainer__button--reset"
+            onClick={handleReset}
+          >
+            <FontAwesomeIcon icon={faWindowRestore} className="filtersForm__buttonsContainer__button__icon" />
+            Reset
+          </button>
+          <button 
+            type="submit" 
+            className="filtersForm__buttonsContainer__button filtersForm__buttonsContainer__button--submit"
+          >
+            <FontAwesomeIcon icon={faSave} className="filtersForm__buttonsContainer__button__icon" />
+            Save filters
+          </button>
+        </div>  
       </form>
     </Modal>
   )

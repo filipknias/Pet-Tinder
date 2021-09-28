@@ -6,7 +6,7 @@ export interface PetsState {
   pets: Pet[];
   pagination: Pagination|null;
   token: StorageToken|null;
-  filters: Filters|null;
+  filters: Filters;
   loading: boolean;
   isError: boolean;
 };
@@ -15,7 +15,14 @@ const initialState: PetsState = {
   pets: [],
   pagination: null,
   token: null,
-  filters: null,
+  filters: {
+    type: null,
+    age: null,
+    coat: null,
+    color: null,
+    gender: null,
+    location: null,   
+  },
   loading: false,
   isError: false,
 };
@@ -74,7 +81,14 @@ const petsReducer = (state: PetsState = initialState, action: petsTypes.PetsActi
     case petsTypes.CLEAR_FILTERS: {
       return {
         ...state,
-        filters: null,
+        filters: {
+          type: null,
+          age: null,
+          coat: null,
+          color: null,
+          gender: null,
+          location: null,   
+        },
       }
     };
     case petsTypes.NEXT_PAGE: {

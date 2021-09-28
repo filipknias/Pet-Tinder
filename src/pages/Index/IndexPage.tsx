@@ -4,6 +4,7 @@ import { Placement, Colors } from "../../types/global";
 import TinderCard from "../../components/TinderCard/TinderCard";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import ErrorScreen from "../../components/ErrorScreen/ErrorScreen";
+import EmptyScreen from "../../components/EmptyScreen/EmptyScreen";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -30,7 +31,7 @@ const IndexPage: React.FC = () => {
   const [rejectedPetsCounter, setRejectedPetsCounter] = useState<number>(0);
   const [filtersModalOpen, setFiltersModalOpen] = useState<boolean>(false);
   const cardRef = React.createRef<HTMLDivElement>();
-  const { pets, pagination, token, isError, loading } = useSelector((state: RootState) => state.petsReducer);
+  const { pets, pagination, token, isError, loading, filters } = useSelector((state: RootState) => state.petsReducer);
   const { user } = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch();
   const { saveItem, getQueriedItems } = useFirestore(firestore);
@@ -42,13 +43,12 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     if (token === null) return;
     // Get pets when token is set
-    dispatch(getPets());
-  }, [token]);
-
+    dispatch(getPets(1, filters));
+  }, [token, filters]);
 
   useEffect(() => {
     if (pagination === null) return;
-    dispatch(getPets(pagination.current_page));
+    dispatch(getPets(pagination?.current_page, filters));
 
     // Push info notification
     if (pagination.current_page > 1) {
@@ -156,14 +156,14 @@ const IndexPage: React.FC = () => {
   }
 
   const handleRefresh = async () => {
-    if (loading) return;
+    if (loading || pagination === null) return;
     setButtonsDisabled(true);
     // Get token
     if (token && isTokenExpired(token)) {
       dispatch(getToken());
     }
     // Get pets
-    dispatch(getPets());
+    dispatch(getPets(pagination.current_page, filters));
     // Reset state
     setCurrentPetIndex(0);
     setLikedPetsCounter(0);
@@ -181,8 +181,12 @@ const IndexPage: React.FC = () => {
               <ErrorScreen />
             ) : (
               <>  
-                {pets.length > 0 && (
+                {pets.length > 0 ? (
                   <TinderCard ref={cardRef} animal={pets[currentPetIndex]} />
+                ) : (
+                  <>
+                  <EmptyScreen text="No pets matching given filters" />
+                  </>
                 )}
               </>
             )}

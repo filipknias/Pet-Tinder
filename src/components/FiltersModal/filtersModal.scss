@@ -28,27 +28,43 @@
       }
     }
   }
-  .filtersForm__submit{
-    @include buttonReset;
+  .filtersForm__buttonsContainer {
     width: 100%;
-    background-color: $purple;
-    color: $white;
-    text-align: center;
-    padding: 0.5rem;
-    border-radius: 10px;
-    font-size: 1.2rem;
-    font-family: $font-secondary;
-    transition: all 0.2s ease-in-out;
-    margin-top: 0.5rem;
+    @include flex(center, center, column);
+    gap: 1rem;
+    margin-top: 1.3rem;
     @media (max-width: $breakpoint-sm) {
-      font-size: 1rem;
+      margin-top: 0.6rem;
     }
-    &:hover {
-      background-color: $dark-purple;
-    }
-    .form__submit__loading {
-      @include loadingSpinnerRotate;
-      font-size: 1.5rem;
+    .filtersForm__buttonsContainer__button {
+      @include buttonReset;
+      width: 100%;
+      color: $white;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      font-family: $font-secondary;
+      transition: all 0.2s ease-in-out;
+      @media (max-width: $breakpoint-sm) {
+        font-size: 1rem;
+      }
+      .filtersForm__buttonsContainer__button__icon {
+        margin-right: 0.7rem;
+        font-size: 1.2rem;
+      }
+      &.filtersForm__buttonsContainer__button--reset {
+        background-color: $dark-blue;
+        &:hover {
+          background-color: $dark-blue-hover;
+        }
+      }
+      &.filtersForm__buttonsContainer__button--submit {
+        background-color: $purple;
+        &:hover {
+          background-color: $dark-purple;
+        }
+      }
     }
   }
 }

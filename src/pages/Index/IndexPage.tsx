@@ -4,7 +4,6 @@ import { Placement, Colors } from "../../types/global";
 import TinderCard from "../../components/TinderCard/TinderCard";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import ErrorScreen from "../../components/ErrorScreen/ErrorScreen";
-import EmptyScreen from "../../components/EmptyScreen/EmptyScreen";
 import RoundedButton from "../../components/RoundedButton/RoundedButton";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +11,6 @@ import { faHeart, faTimesCircle, faRedo, faSortAmountUp } from '@fortawesome/fre
 import { useSelector, useDispatch } from "react-redux";
 import { getToken, getPets } from "../../redux/actions/petsActions";
 import { pushNotification } from "../../redux/actions/uiActions";
-import { NEXT_PAGE } from "../../redux/types/petsTypes";
 import { RootState } from "../../redux/store";
 import { isTokenExpired } from '../../utilities/helpers';
 import { Notification } from "../../types/global";
@@ -22,15 +20,16 @@ import Reject from "../../models/Reject";
 import useFirestore from "../../hooks/useFirestore";
 import { firestore } from "../../utilities/firebase";
 import { where } from "firebase/firestore";
-import FiltersModal from '../../components/FiltersModal/FiltersModal';;
+import FiltersModal from '../../components/FiltersModal/FiltersModal';
+import useTinderCard from '../../hooks/useTinderCard';
+import * as petsTypes from "../../redux/types/petsTypes";
+import axios from "axios";
 
 const IndexPage: React.FC = () => {
-  const [currentPetIndex, setCurrentPetIndex] = useState<number>(0);
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
   const [likedPetsCounter, setLikedPetsCounter] = useState<number>(0);
   const [rejectedPetsCounter, setRejectedPetsCounter] = useState<number>(0);
   const [filtersModalOpen, setFiltersModalOpen] = useState<boolean>(false);
-  const cardRef = React.createRef<HTMLDivElement>();
   const { pets, pagination, token, isError, loading, filters } = useSelector((state: RootState) => state.petsReducer);
   const { user } = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch();
@@ -39,16 +38,35 @@ const IndexPage: React.FC = () => {
     fontSize: "2.2rem", 
     padding: "1rem",
   };
+  const { cardRef, currentIndex, handleNextCard, setCurrentIndex } = useTinderCard();
 
   useEffect(() => {
     if (token === null) return;
     // Get pets when token is set
-    dispatch(getPets(1, filters));
-  }, [token, filters]);
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    dispatch(getPets(1, filters, source.token));
+    return () => {
+      source.cancel();
+    };
+  }, [token]);
 
   useEffect(() => {
     if (pagination === null) return;
-    dispatch(getPets(pagination?.current_page, filters));
+    setCurrentIndex(0);
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    dispatch(getPets(pagination.current_page, filters, source.token));
+    return () => {
+      source.cancel();
+    };
+  }, [filters]);
+
+  useEffect(() => {
+    if (pagination === null) return;
+    const CancelToken = axios.CancelToken;
+    const source = CancelToken.source();
+    dispatch(getPets(pagination.current_page, filters, source.token));
 
     // Push info notification
     if (pagination.current_page > 1) {
@@ -63,7 +81,10 @@ const IndexPage: React.FC = () => {
     // Reset state
     setLikedPetsCounter(0);
     setRejectedPetsCounter(0);
-    setCurrentPetIndex(0);
+
+    return () => {
+      source.cancel();
+    };
   }, [pagination?.current_page]);
 
   useEffect(() => {
@@ -74,85 +95,39 @@ const IndexPage: React.FC = () => {
     }
   }, [loading, isError]);
 
-  const makeCardAnimation = (cbAfterAnimation: () => void): void => {
-    const { current } = cardRef;
-    if (current === null) return;
-    current.style.animation = "bounce 0.4s ease-in-out";
-    current.onanimationend = () => {
-      current.style.animation = "none";
-      cbAfterAnimation();
-    }
-  };
-
-  const isNextPage = (): boolean => {
-    if (currentPetIndex + 1 === pagination?.count_per_page) return true;
-    else return false;
-  }
-
-  const handleAsyncButtonClick = (asyncCallback: () => void) => {
-    if (pagination === null || token === null) return;
-    setButtonsDisabled(true);
-    // Check if token is expired
-    if (isTokenExpired(token)) {
-      dispatch(getToken());
-    } else {
-      makeCardAnimation(() => {
-        // Make DB request
-        asyncCallback();
-        // Check for next page
-        if (isNextPage()) {
-          setNextPage();
-        } else {
-          setCurrentPetIndex((prevIndex) => prevIndex + 1);
-        }
-        setButtonsDisabled(false);
-      });
-    }
-  }
-
-  const setNextPage = (): void => {
-    if (pagination === null) return;
-    // Set next page
-    let nextPage: number = pagination.current_page + 1;
-    // Check if all pages has been displayed
-    if (nextPage > pagination.total_pages) {
-      nextPage = 1;
-    }
-    // Set next page in pagination state
-    dispatch({
-      type: NEXT_PAGE,
-      payload: nextPage
-    });
-  }
   
   const handleLikeClick = () => {
-    handleAsyncButtonClick(async () => {
+    setButtonsDisabled(true);
+    handleNextCard(async () => {
       if (user === null) return;
       const likeObject: Like = {
         user_id: user.uid,
-        pet_id: pets[currentPetIndex].id,
+        pet_id: pets[currentIndex].id,
       }
-      const petsQuery = where("pet_id", "==", pets[currentPetIndex].id);
+      const petsQuery = where("pet_id", "==", pets[currentIndex].id);
       const petsFromDb = await getQueriedItems("likes", petsQuery);
       if (petsFromDb && petsFromDb.length > 0) return;
       await saveItem("likes", likeObject);
       setLikedPetsCounter((prevCounter) => prevCounter + 1);
     });
+    setButtonsDisabled(false);
   }
 
   const handleDislikeClick = () => {
-    handleAsyncButtonClick(async () => {
+    setButtonsDisabled(true);
+    handleNextCard(async () => {
       if (user === null) return;
       const rejectObject: Reject = {
         user_id: user.uid,
-        pet_id: pets[currentPetIndex].id,
+        pet_id: pets[currentIndex].id,
       }
-      const petsQuery = where("pet_id", "==", pets[currentPetIndex].id);
+      const petsQuery = where("pet_id", "==", pets[currentIndex].id);
       const petsFromDb = await getQueriedItems("rejects", petsQuery);
       if (petsFromDb && petsFromDb.length > 0) return;
       await saveItem("rejects", rejectObject);
       setRejectedPetsCounter((prevCounter) => prevCounter + 1);
     });
+    setButtonsDisabled(false);
   }
 
   const handleRefresh = async () => {
@@ -164,8 +139,9 @@ const IndexPage: React.FC = () => {
     }
     // Get pets
     dispatch(getPets(pagination.current_page, filters));
+    dispatch({ type: petsTypes.CLEAR_FILTERS });
     // Reset state
-    setCurrentPetIndex(0);
+    setCurrentIndex(0);
     setLikedPetsCounter(0);
     setRejectedPetsCounter(0);
     setButtonsDisabled(false);
@@ -181,12 +157,8 @@ const IndexPage: React.FC = () => {
               <ErrorScreen />
             ) : (
               <>  
-                {pets.length > 0 ? (
-                  <TinderCard ref={cardRef} animal={pets[currentPetIndex]} />
-                ) : (
-                  <>
-                  <EmptyScreen text="No pets matching given filters" />
-                  </>
+                {pets.length > 0 && (
+                  <TinderCard ref={cardRef} animal={pets[currentIndex]} />
                 )}
               </>
             )}

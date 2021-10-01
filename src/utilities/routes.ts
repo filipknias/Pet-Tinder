@@ -5,4 +5,5 @@ export default {
   forgotPassword: "/forgot-password",
   profile: "/profile",
   editProfile: "/edit-profile",
+  likes: "/likes",
 };

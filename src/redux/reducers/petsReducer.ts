@@ -91,11 +91,32 @@ const petsReducer = (state: PetsState = initialState, action: petsTypes.PetsActi
         },
       }
     };
-    case petsTypes.NEXT_PAGE: {
-      if (state.pagination === null) return state;
+    case petsTypes.CLEAR_PETS: {
       return {
         ...state,
-        pagination: { ...state.pagination, current_page: action.payload },
+        pets: [],
+        pagination: null,
+        isError: false,
+        loading: false,
+      }
+    }
+    case petsTypes.NEXT_PAGE: {
+      const { pagination } = state;
+      if (pagination === null) return state;
+      let nextPage: number = pagination.current_page + 1;
+      if (nextPage > pagination.total_pages) nextPage = 1;
+      return {
+        ...state,
+        pagination: { ...pagination, current_page: nextPage },
+      }
+    };
+    case petsTypes.PREV_PAGE: {
+      const { pagination } = state;
+      if (pagination === null) return state;
+      if (pagination.current_page === 1) return state;
+      return {
+        ...state,
+        pagination: { ...pagination, current_page: pagination.current_page - 1 },
       }
     };
     default: {

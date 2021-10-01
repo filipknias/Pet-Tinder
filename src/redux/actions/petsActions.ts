@@ -7,7 +7,7 @@ import { Dispatch } from "redux";
 import * as petsTypes from "../types/petsTypes";
 import { formatToken, isTokenExpired } from "../../utilities/helpers";
 import { firestore } from "../../utilities/firebase";
-import axios from "axios";
+import axios, { CancelToken, Cancel } from "axios";
 import { PROXY_SERVER, LOCAL_STORAGE_TOKEN_KEY } from "../../types/constants";
 
 const generateApiQuery = (filters: Filters) => {
@@ -18,11 +18,12 @@ const generateApiQuery = (filters: Filters) => {
   return queryString;
 };
 
-export const getPets = (page: number = 1, filters: Filters) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
+export const getPets = (page: number = 1, filters: Filters, cancelToken?: CancelToken) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
   try {
     dispatch({ type: petsTypes.PETS_START });
     const queryParams = `page=${page}&${generateApiQuery(filters)}`;
-    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?${queryParams}`);
+    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?${queryParams}`, { cancelToken });
+
     // Get user uid
     const user = getState().authReducer.user;
     if (user === null) return;
@@ -64,8 +65,9 @@ export const getPets = (page: number = 1, filters: Filters) => async (dispatch: 
       },
     });
   } catch (err: any) {
+    if (cancelToken) return;
     dispatch({ type: petsTypes.PETS_FAIL });
-    console.log(err.code);
+    console.log(err);
   }
 }
 
@@ -101,3 +103,47 @@ export const getToken = () => async (dispatch: Dispatch<petsTypes.PetsActionType
     console.log(err);
   }
 }
+
+export const getLikedPets = (uid: string, page?: number , cancelToken?: CancelToken) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>) => {
+  try {
+    dispatch({ type: petsTypes.PETS_START });
+    // Get pet ids from db
+    const petsQuery = where("user_id", "==", uid);
+    const q = query(collection(firestore, "likes"), petsQuery); 
+    const petsQuerySnap = await getDocs(q);
+    // Put ids to array
+    const petsIds: number[] = [];
+    petsQuerySnap.forEach((doc) => {
+      if (doc.exists()) {
+        petsIds.push(doc.data().pet_id);
+      }
+    });
+    // Get pets from api
+    const petsPromises = petsIds.map(async (id) => {
+      const { data: { animal } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals/${id}`, { cancelToken });
+      return animal;
+    })
+    const pets = await Promise.all(petsPromises);
+    // Set in state
+    const COUNT_PER_PAGE: number = 20;
+    const totalPages: number = Math.ceil(pets.length / COUNT_PER_PAGE); 
+    dispatch({
+      type: petsTypes.PETS_SUCCESS,
+      payload: {
+        pets,
+        pagination: {
+          count_per_page: pets.length >= COUNT_PER_PAGE ? COUNT_PER_PAGE : pets.length,
+          current_page: 1,
+          total_count: pets.length,
+          total_pages: totalPages,
+          _links: null,
+        },
+      },
+    });
+    
+  } catch (err: any) {
+    if (cancelToken) return;
+    dispatch({ type: petsTypes.PETS_FAIL });
+    console.log(err);
+  }
+};

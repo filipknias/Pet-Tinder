@@ -13,6 +13,8 @@ export const UPDATE_FILTERS = "UPDATE_FILTERS";
 export const CLEAR_FILTERS = "CLEAR_FILTERS";
 
 export const NEXT_PAGE = "NEXT_PAGE";
+export const PREV_PAGE = "PREV_PAGE";
+export const CLEAR_PETS = "CLEAR_PETS";
 
 interface PetsApiResponse {
   pets: Pet[],
@@ -49,10 +51,12 @@ interface ClearFiltersAction {
   type: typeof CLEAR_FILTERS,
 }
 
-interface NextPageAction {
-  type: typeof NEXT_PAGE,
-  payload: number,
+interface ClearPetsAction {
+  type: typeof CLEAR_PETS,
 }
+
+interface NextPageAction { type: typeof NEXT_PAGE };
+interface PrevPageAction { type: typeof PREV_PAGE };
 
 export type PetsActionTypes = 
             PetsStartAction | 
@@ -63,4 +67,6 @@ export type PetsActionTypes =
             TokenFailAction | 
             UpdateFiltersAction |
             ClearFiltersAction | 
-            NextPageAction;
+            ClearPetsAction |
+            NextPageAction |
+            PrevPageAction;

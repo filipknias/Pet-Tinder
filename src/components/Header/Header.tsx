@@ -36,11 +36,13 @@ const Header: React.FC = () => {
               </RoundedButton>
             </Tooltip>
           </Link>
-          <Tooltip text="Likes">
-            <RoundedButton color={Colors.red} style={{ fontSize: "1rem" }}> 
-              <FontAwesomeIcon icon={faHeart} />
-            </RoundedButton>
-          </Tooltip>
+          <Link to={routes.likes}>
+            <Tooltip text="Likes">
+              <RoundedButton color={Colors.red} style={{ fontSize: "1rem" }}> 
+                <FontAwesomeIcon icon={faHeart} />
+              </RoundedButton>
+            </Tooltip>
+          </Link>
           <Tooltip text="Notifications">
             <RoundedButton 
               color={Colors.blue} 

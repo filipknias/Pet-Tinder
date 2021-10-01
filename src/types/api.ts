@@ -91,7 +91,7 @@ export interface Pagination {
   total_count:    number;
   current_page:   number;
   total_pages:    number;
-  _links:         Links;
+  _links:         Links|null;
 }
 
 export interface Links {

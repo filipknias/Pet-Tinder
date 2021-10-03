@@ -1,3 +1,5 @@
+import { timestamp } from "../utilities/firebase";
+
 export enum Colors {
   blue = "blue",
   green = "green",
@@ -65,3 +67,5 @@ export enum Gender {
   Male = "Male",
   Unknown = "Unknown",
 }
+
+export type Timestamp = typeof timestamp;

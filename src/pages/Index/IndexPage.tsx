@@ -18,7 +18,7 @@ import { v4 as uuid } from "uuid";
 import Like from "../../models/Like";
 import Reject from "../../models/Reject";
 import useFirestore from "../../hooks/useFirestore";
-import { firestore } from "../../utilities/firebase";
+import { firestore, timestamp } from "../../utilities/firebase";
 import { where } from "firebase/firestore";
 import FiltersModal from '../../components/FiltersModal/FiltersModal';
 import useTinderCard from '../../hooks/useTinderCard';
@@ -103,6 +103,7 @@ const IndexPage: React.FC = () => {
       const likeObject: Like = {
         user_id: user.uid,
         pet_id: pets[currentIndex].id,
+        created_at: timestamp,
       }
       const petsQuery = where("pet_id", "==", pets[currentIndex].id);
       const petsFromDb = await getQueriedItems("likes", petsQuery);
@@ -120,6 +121,7 @@ const IndexPage: React.FC = () => {
       const rejectObject: Reject = {
         user_id: user.uid,
         pet_id: pets[currentIndex].id,
+        created_at: timestamp,
       }
       const petsQuery = where("pet_id", "==", pets[currentIndex].id);
       const petsFromDb = await getQueriedItems("rejects", petsQuery);

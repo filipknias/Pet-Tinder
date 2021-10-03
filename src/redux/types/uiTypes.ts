@@ -2,7 +2,7 @@ import { Notification } from "../../types/global";
 
 export const PUSH_NOTIFICATION = "PUSH_NOTIFICATION";
 export const DELETE_NOTIFICATION = "DELETE_NOTIFICATION";
-export const CLEAR_OUT = "CLEAR_OUT";
+export const CLEAR_NOTIFICATIONS = "CLEAR_NOTIFICATIONS";
 
 interface PushNotificationAction {
   type: typeof PUSH_NOTIFICATION;
@@ -12,11 +12,11 @@ interface DeleteNotificationAction {
   type: typeof DELETE_NOTIFICATION;
   payload: string;
 };
-interface ClearOutAction {
-  type: typeof CLEAR_OUT;
+interface ClearNotificationsAction {
+  type: typeof CLEAR_NOTIFICATIONS;
 };
 
 export type UiActionTypes = 
                         PushNotificationAction |
                         DeleteNotificationAction |
-                        ClearOutAction;
+                        ClearNotificationsAction;

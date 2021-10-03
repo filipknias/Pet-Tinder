@@ -17,6 +17,7 @@ import routes from "./utilities/routes";
 import { auth, firestore } from "./utilities/firebase"; 
 import * as authTypes from "./redux/types/authTypes";
 import * as petsTypes from "./redux/types/petsTypes";
+import * as uiTypes from "./redux/types/uiTypes";
 import { where } from "firebase/firestore"; 
 import GuestRoute from './components/Routes/GuestRoute';
 import ProtectedRoute from './components/Routes/ProtectedRoute';
@@ -67,6 +68,7 @@ const App: React.FC = () => {
     // Set user on state changed
     auth.onAuthStateChanged((user) => {
       if (user) getUserAndSetInState(user.uid); 
+      dispatch({ type: uiTypes.CLEAR_NOTIFICATIONS });
     });
     // Get token
     dispatch(getToken());

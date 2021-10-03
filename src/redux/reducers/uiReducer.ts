@@ -29,7 +29,7 @@ const uiReducer = (state: UiState = initialState, action: uiTypes.UiActionTypes)
         notifications,
       }
     };
-    case uiTypes.CLEAR_OUT: {
+    case uiTypes.CLEAR_NOTIFICATIONS: {
       return {
         ...state,
         notifications: [],

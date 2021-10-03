@@ -38,7 +38,7 @@ const formatDisplayName = (email: string): string => {
   return email.split("@")[0];
 };
 
-export const registerUser = (email: string, password: string, confirmPassword: string, history: History) => async (dispatch: Dispatch<authTypes.AuthActionTypes>) => {
+export const registerUser = (email: string, password: string, confirmPassword: string, history: History) => async (dispatch: Dispatch<authTypes.AuthActionTypes|uiTypes.UiActionTypes>) => {
   try {
     if (password !== confirmPassword) {
       return dispatch({
@@ -71,7 +71,16 @@ export const registerUser = (email: string, password: string, confirmPassword: s
     
     // Send email verification
     await sendEmailVerification(user);
-    // TODO: Show popup message with email verification has been send
+    // Push notification
+    const verificationEmailNotification: Notification = {
+      id: uuid(),
+      message: "A verification email has been sent",
+      type: "info",
+    };
+    dispatch({
+      type: uiTypes.PUSH_NOTIFICATION,
+      payload: verificationEmailNotification,
+    });
   } catch (err: any) {
     console.log(err.code);
     dispatch({

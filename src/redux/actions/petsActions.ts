@@ -18,25 +18,17 @@ const generateApiQuery = (filters: Filters) => {
   return queryString;
 };
 
-export const getPets = (page: number = 1, filters: Filters, cancelToken?: CancelToken) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
-  try {
-    dispatch({ type: petsTypes.PETS_START });
-    const queryParams = `page=${page}&${generateApiQuery(filters)}`;
-    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?${queryParams}`, { cancelToken });
-
-    // Get user uid
-    const user = getState().authReducer.user;
-    if (user === null) return;
+const limitLikeAndRejectedPets = async (uid: string, pets: Pet[]) => {
     // Get all likes and rejects pets id's
     // Likes
-    const likedPetsQuery = where("user_id", "==", user.uid);
+    const likedPetsQuery = where("user_id", "==", uid);
     const queryLikes = query(collection(firestore, "likes"), likedPetsQuery); 
     const likesQuerySnap = await getDocs(queryLikes);
     // Rejects
-    const rejectsPetsQuery = where("user_id", "==", user.uid);
+    const rejectsPetsQuery = where("user_id", "==", uid);
     const queryRejects = query(collection(firestore, "rejects"), rejectsPetsQuery); 
     const rejectsQuerySnap = await getDocs(queryRejects);
-
+    // Get liked or rejected ids
     const petsIds: number[] = [];
     rejectsQuerySnap.forEach((doc) => {
       if (doc.exists()) {
@@ -48,19 +40,33 @@ export const getPets = (page: number = 1, filters: Filters, cancelToken?: Cancel
         petsIds.push(doc.data().pet_id);
       }
     }); 
-
-    // Filter pets
-    const filteredPets = animals.filter((animal: Pet) => {
+    // Filter data
+    const filteredPets = pets.filter((animal: Pet) => {
       if (!petsIds.some((id) => id === animal.id)) return animal; 
     });
+
+    return filteredPets;
+};
+
+export const getPets = (page: number = 1, filters: Filters, cancelToken?: CancelToken) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>, getState: () => RootState) => {
+  try {
+    dispatch({ type: petsTypes.PETS_START });
+    const queryParams = `page=${page}&${generateApiQuery(filters)}`;
+    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?${queryParams}`, { cancelToken });
+    // Get user uid
+    const user = getState().authReducer.user;
+    let petsData: Pet[] = animals;
+    if (user) {
+      petsData = await limitLikeAndRejectedPets(user.uid, animals);
+    }
     // Set state  
     dispatch({
       type: petsTypes.PETS_SUCCESS,
       payload: {
-        pets: animals,
+        pets: petsData,
         pagination: {
           ...pagination,
-          count_per_page: filteredPets.length,
+          count_per_page: petsData.length,
         },
       },
     });
@@ -107,9 +113,8 @@ export const getLikedPets = (uid: string, cancelToken?: CancelToken) => async (d
   try {
     dispatch({ type: petsTypes.LIKES_START });
     // Get pet ids from db
-    // TODO: add order by
     const petsQuery = where("user_id", "==", uid);
-    const petsLikesQuery = query(collection(firestore, "likes"), petsQuery);
+    const petsLikesQuery = query(collection(firestore, "likes"), petsQuery, orderBy("created_at", "desc"));
     const petsLikes = await getDocs(petsLikesQuery);
     // Put ids to array
     const petsIds: number[] = [];

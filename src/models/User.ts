@@ -1,5 +1,4 @@
-import { timestamp } from "../utilities/firebase";;
-type Timestamp = typeof timestamp;
+import { Timestamp } from "../types/global"; 
 
 export default interface User {
   uid: string;

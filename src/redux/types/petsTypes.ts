@@ -20,6 +20,8 @@ export const NEXT_PAGE = "NEXT_PAGE";
 export const PREV_PAGE = "PREV_PAGE";
 export const CLEAR_PETS = "CLEAR_PETS";
 
+export const DELETE_PET = "DELETE_PET";
+
 interface PetsApiResponse {
   pets: Pet[],
   pagination: Pagination|null,
@@ -73,6 +75,11 @@ interface ClearPetsAction {
 interface NextPageAction { type: typeof NEXT_PAGE };
 interface PrevPageAction { type: typeof PREV_PAGE };
 
+interface DeletePetAction {
+  type: typeof DELETE_PET;
+  payload: number;
+}
+
 export type PetsActionTypes = 
             PetsStartAction | 
             PetsSuccessAction | 
@@ -87,4 +94,5 @@ export type PetsActionTypes =
             ClearFiltersAction | 
             ClearPetsAction |
             NextPageAction |
-            PrevPageAction;
+            PrevPageAction |
+            DeletePetAction;

@@ -158,6 +158,15 @@ const petsReducer = (state: PetsState = initialState, action: petsTypes.PetsActi
         pagination: { ...pagination, current_page: pagination.current_page - 1 },
       }
     };
+    case petsTypes.DELETE_PET: {
+      const updatedPets = state.pets.filter(({ id }) => {
+        return id !== action.payload;
+      });
+      return {
+        ...state,
+        pets: updatedPets,
+      }
+    };
     default: {
       return state;
     }

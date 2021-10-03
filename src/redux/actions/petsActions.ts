@@ -1,4 +1,4 @@
-import { query, collection, getDocs } from "firebase/firestore";
+import { query, collection, getDocs, deleteDoc, orderBy } from "firebase/firestore";
 import { RootState } from "../store";
 import { where } from "firebase/firestore";
 import { StorageToken, Filters } from "../../types/global";
@@ -107,6 +107,7 @@ export const getLikedPets = (uid: string, cancelToken?: CancelToken) => async (d
   try {
     dispatch({ type: petsTypes.LIKES_START });
     // Get pet ids from db
+    // TODO: add order by
     const petsQuery = where("user_id", "==", uid);
     const petsLikesQuery = query(collection(firestore, "likes"), petsQuery);
     const petsLikes = await getDocs(petsLikesQuery);
@@ -129,6 +130,26 @@ export const getLikedPets = (uid: string, cancelToken?: CancelToken) => async (d
       payload: pets,
     });
     
+  } catch (err: any) {
+    dispatch({ type: petsTypes.LIKES_FAIL });
+    console.log(err);
+  }
+};
+
+export const deletePet = (petId: number) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>) => {
+  try {
+    const petQuery = where("pet_id", "==", petId);
+    const q = query(collection(firestore, "likes"), petQuery); 
+    const docs = await getDocs(q);
+    docs.forEach(async (doc) => {
+      if (doc.exists()) {
+        await deleteDoc(doc.ref);
+        dispatch({ 
+          type: petsTypes.DELETE_PET,
+          payload: doc.data().pet_id,
+        });
+      }
+    });
   } catch (err: any) {
     dispatch({ type: petsTypes.LIKES_FAIL });
     console.log(err);

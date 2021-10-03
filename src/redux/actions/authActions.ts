@@ -233,6 +233,7 @@ export const deleteUser = (uid: string, history: History, credentials: Credentia
 
     await deleteUserFromFirebase(auth.currentUser);
     
+    // Delete user in firestore
     const docRef = collection(firestore, "users");
     const q = query(docRef, where("uid", "==", uid));  
     const querySnap = await getDocs(q);
@@ -242,9 +243,28 @@ export const deleteUser = (uid: string, history: History, credentials: Credentia
       }
     })
     
+    // Delete users likes and rejects
+    const likesQuery = where("user_id", "==", uid);
+    const likesQ = query(collection(firestore, "likes"), likesQuery); 
+    const likes = await getDocs(likesQ);
+    likes.forEach(async (doc) => {
+      if (doc.exists()) {
+        await deleteDoc(doc.ref);
+      }
+    }); 
+    const rejectsQuery = where("user_id", "==", uid);
+    const rejectsQ = query(collection(firestore, "rejects"), rejectsQuery); 
+    const rejects = await getDocs(rejectsQ);
+    rejects.forEach(async (doc) => {
+      if (doc.exists()) {
+        await deleteDoc(doc.ref);
+      }
+    });
+
     dispatch({ type: authTypes.DELETE_USER_SUCCESS });
     history.push(routes.index);
 
+    // Push notification
     const deleteUserNotification: Notification = {
       id: uuid(),
       message: "Profile has been deleted",

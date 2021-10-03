@@ -11,16 +11,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faArrowLeft, faArrowRight, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
-import { getLikedPets } from '../../redux/actions/petsActions';
+import { getLikedPets, getToken, deletePet } from '../../redux/actions/petsActions';
 import useTinderCard from '../../hooks/useTinderCard';
 import axios from "axios";
+import { isTokenExpired } from "../../utilities/helpers";
 
 const LikesPage: React.FC = () => {
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
-  const { pets, likes: { loading, isError } } = useSelector((state: RootState) => state.petsReducer);
+  const { pets, token, likes: { loading, isError } } = useSelector((state: RootState) => state.petsReducer);
   const { user } = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch();
-  const { cardRef, currentIndex, handlePreviousCard, handleNextCard } = useTinderCard();
+  const { 
+    cardRef, 
+    currentIndex, 
+    setCurrentIndex, 
+    handlePreviousCard, 
+    handleNextCard,
+    makeCardAnimation,
+  } = useTinderCard();
   const roundedButtonStyle = {
     fontSize: "2.1rem", 
     padding: "1rem 1.1rem",
@@ -34,7 +42,7 @@ const LikesPage: React.FC = () => {
     return () => {
       source.cancel();
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (loading || isError) {
@@ -44,12 +52,25 @@ const LikesPage: React.FC = () => {
     }
   }, [loading, isError]);
 
-  const handleNextClick = () => {
-    handleNextCard();
-  };  
+  const handleRefresh = () => {
+    if (loading || user === null) return;
+    setButtonsDisabled(true);
+    // Get token
+    if (token && isTokenExpired(token)) {
+      dispatch(getToken());
+    }
+    // Get pets
+    dispatch(getLikedPets(user.uid));
+    // Reset state
+    setCurrentIndex(0);
+    setButtonsDisabled(false);
+  };
 
-  const handlePrevClick = () => {
-    handlePreviousCard(); 
+  const handleDelete = () => {
+    makeCardAnimation(() => {
+      dispatch(deletePet(pets[currentIndex].id));
+      if (currentIndex === pets.length - 1 && currentIndex > 0) setCurrentIndex((prevIndex) => prevIndex - 1);
+    });
   };
 
   return (
@@ -78,7 +99,7 @@ const LikesPage: React.FC = () => {
             <RoundedButton 
               color={Colors.yellow} 
               style={roundedButtonStyle} 
-              onClick={undefined}
+              onClick={handleRefresh}
             >
               <FontAwesomeIcon icon={faRedo} />
             </RoundedButton>
@@ -87,7 +108,7 @@ const LikesPage: React.FC = () => {
             <RoundedButton 
               color={Colors.blue} 
               style={roundedButtonStyle} 
-              onClick={buttonsDisabled ? undefined : handlePrevClick}
+              onClick={buttonsDisabled ? undefined : () => handlePreviousCard()}
             >
               <FontAwesomeIcon icon={faArrowLeft} />
             </RoundedButton>
@@ -96,7 +117,7 @@ const LikesPage: React.FC = () => {
             <RoundedButton 
               color={Colors.blue}  
               style={roundedButtonStyle} 
-              onClick={buttonsDisabled ? undefined : handleNextClick}
+              onClick={buttonsDisabled ? undefined : () => handleNextCard()}
             >
               <FontAwesomeIcon icon={faArrowRight} />
             </RoundedButton>
@@ -105,6 +126,7 @@ const LikesPage: React.FC = () => {
             <RoundedButton 
               color={Colors.red} 
               style={roundedButtonStyle}
+              onClick={buttonsDisabled ? undefined : handleDelete}
             >
               <FontAwesomeIcon icon={faTrashAlt} />
             </RoundedButton>

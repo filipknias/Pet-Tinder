@@ -4,7 +4,6 @@ import { NEXT_PAGE } from "../redux/types/petsTypes";
 import { RootState } from "../redux/store";
 import { getToken } from "../redux/actions/petsActions";
 import { isTokenExpired } from "../utilities/helpers";
-import * as petsTypes from "../redux/types/petsTypes";
 
 const useTinderCard = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -29,8 +28,6 @@ const useTinderCard = () => {
   };
   
   const handleNextCard = (callback?: () => void) => {
-    // TODO: push notifiacation if no more items to show
-    // TODO: set notifications delay
     if (isNextPage()) setNextPage();
     else if (currentIndex < pets.length - 1) {
       handleCardSwitch(() => {
@@ -41,7 +38,6 @@ const useTinderCard = () => {
   };  
 
   const handlePreviousCard = (callback?: () => void) => {
-    // TODO: push notifiacation if no more items to show
     if (currentIndex === 0) return; 
     handleCardSwitch(() => {
       setCurrentIndex((prevIndex) => prevIndex - 1);
@@ -69,6 +65,7 @@ const useTinderCard = () => {
     cardRef, 
     handleNextCard, 
     handlePreviousCard, 
+    makeCardAnimation,
   };
 };
 

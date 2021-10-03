@@ -7,7 +7,7 @@ import { Dispatch } from "redux";
 import * as petsTypes from "../types/petsTypes";
 import { formatToken, isTokenExpired } from "../../utilities/helpers";
 import { firestore } from "../../utilities/firebase";
-import axios, { CancelToken, Cancel } from "axios";
+import axios, { CancelToken } from "axios";
 import { PROXY_SERVER, LOCAL_STORAGE_TOKEN_KEY } from "../../types/constants";
 
 const generateApiQuery = (filters: Filters) => {
@@ -65,7 +65,6 @@ export const getPets = (page: number = 1, filters: Filters, cancelToken?: Cancel
       },
     });
   } catch (err: any) {
-    if (cancelToken) return;
     dispatch({ type: petsTypes.PETS_FAIL });
     console.log(err);
   }
@@ -104,16 +103,16 @@ export const getToken = () => async (dispatch: Dispatch<petsTypes.PetsActionType
   }
 }
 
-export const getLikedPets = (uid: string, page?: number , cancelToken?: CancelToken) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>) => {
+export const getLikedPets = (uid: string, cancelToken?: CancelToken) => async (dispatch: Dispatch<petsTypes.PetsActionTypes>) => {
   try {
-    dispatch({ type: petsTypes.PETS_START });
+    dispatch({ type: petsTypes.LIKES_START });
     // Get pet ids from db
     const petsQuery = where("user_id", "==", uid);
-    const q = query(collection(firestore, "likes"), petsQuery); 
-    const petsQuerySnap = await getDocs(q);
+    const petsLikesQuery = query(collection(firestore, "likes"), petsQuery);
+    const petsLikes = await getDocs(petsLikesQuery);
     // Put ids to array
     const petsIds: number[] = [];
-    petsQuerySnap.forEach((doc) => {
+    petsLikes.forEach((doc) => {
       if (doc.exists()) {
         petsIds.push(doc.data().pet_id);
       }
@@ -125,25 +124,13 @@ export const getLikedPets = (uid: string, page?: number , cancelToken?: CancelTo
     })
     const pets = await Promise.all(petsPromises);
     // Set in state
-    const COUNT_PER_PAGE: number = 20;
-    const totalPages: number = Math.ceil(pets.length / COUNT_PER_PAGE); 
     dispatch({
-      type: petsTypes.PETS_SUCCESS,
-      payload: {
-        pets,
-        pagination: {
-          count_per_page: pets.length >= COUNT_PER_PAGE ? COUNT_PER_PAGE : pets.length,
-          current_page: 1,
-          total_count: pets.length,
-          total_pages: totalPages,
-          _links: null,
-        },
-      },
+      type: petsTypes.LIKES_SUCCESS,
+      payload: pets,
     });
     
   } catch (err: any) {
-    if (cancelToken) return;
-    dispatch({ type: petsTypes.PETS_FAIL });
+    dispatch({ type: petsTypes.LIKES_FAIL });
     console.log(err);
   }
 };

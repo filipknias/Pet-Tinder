@@ -2,6 +2,11 @@ import { Pet, Pagination } from "../../types/api";
 import { StorageToken, Filters } from "../../types/global";
 import * as petsTypes from "../types/petsTypes";
 
+interface Likes {
+  loading: boolean;
+  isError: boolean;
+}
+
 export interface PetsState {
   pets: Pet[];
   pagination: Pagination|null;
@@ -9,6 +14,7 @@ export interface PetsState {
   filters: Filters;
   loading: boolean;
   isError: boolean;
+  likes: Likes;
 };
 
 const initialState: PetsState = {
@@ -25,6 +31,10 @@ const initialState: PetsState = {
   },
   loading: false,
   isError: false,
+  likes: {
+    loading: false,
+    isError: false,
+  },
 };
 
 const petsReducer = (state: PetsState = initialState, action: petsTypes.PetsActionTypes): PetsState => {
@@ -49,6 +59,35 @@ const petsReducer = (state: PetsState = initialState, action: petsTypes.PetsActi
         ...state,
         loading: false,
         isError: true,
+      }
+    };
+    case petsTypes.LIKES_START: {
+      return {
+        ...state,
+        likes: {
+          loading: true,
+          isError: false,
+        },
+      }
+    };
+    case petsTypes.LIKES_SUCCESS: {
+      return {
+        ...state,
+        pets: action.payload,
+        pagination: null,
+        likes: {
+          loading: false,
+          isError: false,
+        },
+      }
+    };
+    case petsTypes.LIKES_FAIL: {
+      return {
+        ...state,
+        likes: {
+          loading: false,
+          isError: true,
+        },
       }
     };
     case petsTypes.TOKEN_START: {

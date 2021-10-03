@@ -5,6 +5,10 @@ export const PETS_START = "PETS_START";
 export const PETS_SUCCESS = "PETS_SUCCESS";
 export const PETS_FAIL = "PETS_FAIL";
 
+export const LIKES_START = "LIKES_START";
+export const LIKES_SUCCESS = "LIKES_SUCCESS";
+export const LIKES_FAIL = "LIKES_FAIL";
+
 export const TOKEN_START = "TOKEN_START";
 export const TOKEN_SUCCESS = "TOKEN_SUCCESS";
 export const TOKEN_FAIL = "TOKEN_FAIL";
@@ -18,7 +22,7 @@ export const CLEAR_PETS = "CLEAR_PETS";
 
 interface PetsApiResponse {
   pets: Pet[],
-  pagination: Pagination,
+  pagination: Pagination|null,
 };
 
 interface PetsStartAction {
@@ -30,6 +34,17 @@ interface PetsSuccessAction {
 };
 interface PetsFailAction { 
   type: typeof PETS_FAIL, 
+};
+
+interface LikesStartAction {
+  type: typeof LIKES_START,
+};
+interface LikesSuccessAction {
+  type: typeof LIKES_SUCCESS,
+  payload: Pet[],
+};
+interface LikesFailAction { 
+  type: typeof LIKES_FAIL,  
 };
 
 interface TokenStartAction {
@@ -62,6 +77,9 @@ export type PetsActionTypes =
             PetsStartAction | 
             PetsSuccessAction | 
             PetsFailAction | 
+            LikesStartAction |
+            LikesSuccessAction | 
+            LikesFailAction | 
             TokenStartAction | 
             TokenSuccessAction | 
             TokenFailAction | 

@@ -4,32 +4,35 @@ import { NEXT_PAGE } from "../redux/types/petsTypes";
 import { RootState } from "../redux/store";
 import { getToken } from "../redux/actions/petsActions";
 import { isTokenExpired } from "../utilities/helpers";
+import * as petsTypes from "../redux/types/petsTypes";
 
 const useTinderCard = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const { pagination, token } = useSelector((state: RootState) => state.petsReducer);
+  const { pets, pagination, token } = useSelector((state: RootState) => state.petsReducer);
   const dispatch = useDispatch();
   const cardRef = React.createRef<HTMLDivElement>();
 
   const isNextPage = (): boolean => {
-    if (currentIndex + 1 === pagination?.count_per_page) return true;
+    if (pagination === null) return false;
+    if (currentIndex + 1 === pagination.count_per_page) return true;
     else return false;
   }
 
   const setNextPage = (): void => {
-    if (token === null) return;
+    if (token === null || pagination === null) return;
+    if (pagination.total_pages <= 1) return;
     // Check if token is expired
     if (isTokenExpired(token)) dispatch(getToken());
     // Set next page in pagination state
     dispatch({ type: NEXT_PAGE });
+    setCurrentIndex(0);
   };
-
+  
   const handleNextCard = (callback?: () => void) => {
     // TODO: push notifiacation if no more items to show
-    if (isNextPage()) {
-      setCurrentIndex(0);
-      setNextPage();
-    } else {
+    // TODO: set notifications delay
+    if (isNextPage()) setNextPage();
+    else if (currentIndex < pets.length - 1) {
       handleCardSwitch(() => {
         setCurrentIndex((prevIndex) => prevIndex + 1);
         if (callback) callback();
@@ -38,7 +41,8 @@ const useTinderCard = () => {
   };  
 
   const handlePreviousCard = (callback?: () => void) => {
-    if (currentIndex === 0) return; // TODO: push notifiacation if no more items to show
+    // TODO: push notifiacation if no more items to show
+    if (currentIndex === 0) return; 
     handleCardSwitch(() => {
       setCurrentIndex((prevIndex) => prevIndex - 1);
       if (callback) callback();

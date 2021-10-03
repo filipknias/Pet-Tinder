@@ -14,16 +14,15 @@ import { RootState } from "../../redux/store";
 import { getLikedPets } from '../../redux/actions/petsActions';
 import useTinderCard from '../../hooks/useTinderCard';
 import axios from "axios";
-import * as petsTypes from "../../redux/types/petsTypes";
 
 const LikesPage: React.FC = () => {
   const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
-  const { pets, pagination, isError, loading } = useSelector((state: RootState) => state.petsReducer);
+  const { pets, likes: { loading, isError } } = useSelector((state: RootState) => state.petsReducer);
   const { user } = useSelector((state: RootState) => state.authReducer);
   const dispatch = useDispatch();
-  const { cardRef, currentIndex, setCurrentIndex, handlePreviousCard, handleNextCard } = useTinderCard();
+  const { cardRef, currentIndex, handlePreviousCard, handleNextCard } = useTinderCard();
   const roundedButtonStyle = {
-    fontSize: "2.2rem", 
+    fontSize: "2.1rem", 
     padding: "1rem 1.1rem",
   };
 
@@ -31,7 +30,7 @@ const LikesPage: React.FC = () => {
     if (user === null) return;
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
-    dispatch(getLikedPets(user.uid, 1, source.token));
+    dispatch(getLikedPets(user.uid, source.token));
     return () => {
       source.cancel();
     }
@@ -46,25 +45,11 @@ const LikesPage: React.FC = () => {
   }, [loading, isError]);
 
   const handleNextClick = () => {
-    if (pagination === null) return;
-    // Check if it is last index
-    const { current_page, total_pages, count_per_page } = pagination;
-    // if (current_page === total_pages && currentIndex + 1 > count_per_page) return;
-    // Next card
     handleNextCard();
   };  
 
   const handlePrevClick = () => {
-    if (pagination === null) return;
-    // Check if it is first item
-    if (currentIndex === 0 && pagination.current_page > 1) {
-      // Prev page action
-      setCurrentIndex(pagination.count_per_page - 1);
-      dispatch({ type: petsTypes.PREV_PAGE });
-    } else {
-      // Previous card
-      handlePreviousCard();
-    }
+    handlePreviousCard(); 
   };
 
   return (

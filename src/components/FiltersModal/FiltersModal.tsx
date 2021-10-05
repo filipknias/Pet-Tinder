@@ -20,53 +20,50 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
   const { filters } = useSelector((state: RootState) => state.petsReducer);
   const [filtersForSelectedType, setFiltersForSelectedType] = useState<Types|null>(null);
   const [formValues, setFormValues] = useState<Filters>({
-    type: filters && filters.type ? filters.type : ANY_SELECT_VALUE,
-    age: filters && filters.age ? filters.age : ANY_SELECT_VALUE,
-    coat: filters && filters.coat ? filters.coat : ANY_SELECT_VALUE,
-    color: filters && filters.color ? filters.color : ANY_SELECT_VALUE,
-    gender: filters && filters.gender ? filters.gender : ANY_SELECT_VALUE,
-    location: filters && filters.location ? filters.location : ANY_SELECT_VALUE,
+    type: filters && filters.type ? filters.type : FILTER_TYPES[0].type,
+    age: filters && filters.age ? filters.age : null,
+    coat: filters && filters.coat ? filters.coat : null,
+    color: filters && filters.color ? filters.color : null,
+    gender: filters && filters.gender ? filters.gender : null,
+    location: filters && filters.location ? filters.location : null,
   });
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     // Set available filter types based on selected pet type
     const types = FILTER_TYPES.find((filterType) => {
       return filterType.type === formValues.type;
     });
-    if (types) {
-      setFiltersForSelectedType(types);
-    }
+    if (types) setFiltersForSelectedType(types);
   }, [formValues.type]);
 
   useEffect(() => {
     setFormValues({
       ...formValues,
-      age: null,
       coat: null,
       color: null,
       gender: null,
-      location: null,
     });
   }, [filtersForSelectedType]);
 
+  useEffect(() => {
+    const filters = localStorage.getItem(LOCAL_STORAGE_FILTERS_KEY);
+    if (filters) {
+      setFormValues({ ...JSON.parse(filters) });
+      dispatch({ 
+        type: petsTypes.UPDATE_FILTERS, 
+        payload: { ...JSON.parse(filters) }, 
+      });
+    }
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const filtersToSave: Filters = {
-      type: formValues.type,
-      age: formValues.age,
-      coat: formValues.coat,
-      color: formValues.color,
-      gender: formValues.gender,
-      location: formValues.location,
-    }
-
     dispatch({
       type: petsTypes.UPDATE_FILTERS,
-      payload: filtersToSave,
+      payload: formValues,
     });
-    localStorage.setItem(LOCAL_STORAGE_FILTERS_KEY, JSON.stringify(filtersToSave));
+    localStorage.setItem(LOCAL_STORAGE_FILTERS_KEY, JSON.stringify(formValues));
     setOpen(false);
   };  
 
@@ -76,9 +73,18 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
 
   const handleReset = () => {
     dispatch({ type: petsTypes.CLEAR_FILTERS });
+    setFormValues({
+      age: null,
+      coat: null,
+      color: null,
+      gender: null,
+      location: null,
+      type: null,
+    });
+    localStorage.removeItem(LOCAL_STORAGE_FILTERS_KEY);
     setOpen(false);
   };
-
+ 
   return (
     <Modal open={open} setOpen={setOpen} header="Filters">
       <form className="filtersForm" onSubmit={handleSubmit}>
@@ -90,9 +96,8 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
             onChange={
               (e) => setFormValues({ ...formValues, type: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
             }
-            defaultValue={formValues.type || ANY_SELECT_VALUE}
+            value={formValues.type || undefined}
           >
-            <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
             {FILTER_TYPES.map(({ type }) => (
               <option value={type} key={type}>
                 {type}
@@ -108,7 +113,7 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
             onChange={
               (e) => setFormValues({ ...formValues, age: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
             }
-            defaultValue={formValues.age || ANY_SELECT_VALUE}
+            value={formValues.age || undefined}
           >
               <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
               <option value={Age.Baby}>{capitalizeFirstLetter(Age.Baby)}</option>
@@ -125,7 +130,7 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
             onChange={
               (e) => setFormValues({ ...formValues, coat: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
             }
-            defaultValue={formValues.coat || ANY_SELECT_VALUE}
+            value={formValues.coat || undefined}
           >
             <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
             {filtersForSelectedType && filtersForSelectedType.coats.map((coat) => (
@@ -143,7 +148,7 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
             onChange={
               (e) => setFormValues({ ...formValues, color: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
             }
-            defaultValue={formValues.color || ANY_SELECT_VALUE}
+            value={formValues.color || undefined}
           >
             <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
             {filtersForSelectedType && filtersForSelectedType.colors.map((color) => (
@@ -161,7 +166,7 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
             onChange={
               (e) => setFormValues({ ...formValues, gender: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
             }
-            defaultValue={formValues.gender || ANY_SELECT_VALUE}
+            value={formValues.gender || undefined}
           >
             <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
             {filtersForSelectedType && filtersForSelectedType.genders.map((gender) => (
@@ -179,7 +184,7 @@ const FiltersModal: React.FC<Props> = ({ open, setOpen }) => {
             onChange={
               (e) => setFormValues({ ...formValues, location: e.target.value === ANY_SELECT_VALUE ? null : e.target.value })
             }
-            defaultValue={formValues.location || ANY_SELECT_VALUE}
+            value={formValues.location || undefined}
           >
             <option value={ANY_SELECT_VALUE}>{ANY_SELECT_VALUE}</option>
             {states.map((state) => (

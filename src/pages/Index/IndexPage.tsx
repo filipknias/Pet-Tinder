@@ -22,7 +22,6 @@ import { firestore, timestamp } from "../../utilities/firebase";
 import { where } from "firebase/firestore";
 import FiltersModal from '../../components/FiltersModal/FiltersModal';
 import useTinderCard from '../../hooks/useTinderCard';
-import * as petsTypes from "../../redux/types/petsTypes";
 import axios from "axios";
 
 const IndexPage: React.FC = () => {
@@ -141,7 +140,6 @@ const IndexPage: React.FC = () => {
     }
     // Get pets
     dispatch(getPets(pagination.current_page, filters));
-    dispatch({ type: petsTypes.CLEAR_FILTERS });
     // Reset state
     setCurrentIndex(0);
     setLikedPetsCounter(0);

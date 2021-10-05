@@ -1,0 +1,47 @@
+@import "../../styles/mixins";
+@import "../../styles/variables";
+
+.infoMessage {
+  @include flex(center, space-between, column);
+  background-color: $purple;
+  color: $white;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  min-width: 200px;
+  max-width: 270px;
+  min-height: 200px;
+  box-shadow: $block-box-shadow;
+  @media (max-width: $breakpoint-sm) {
+    max-width: 100%;
+    min-height: 170px;
+    border-radius: 0;
+  }
+  .infoMessage__message {
+    font-size: 1.1rem;
+    font-weight: $font-weight-normal;
+    font-family: $font-secondary;
+    @media (max-width: $breakpoint-sm) {
+      font-size: 1.2rem;
+    }
+  }
+  .infoMessage__buttonsContainer {
+    @include flex(center, flex-start);
+    width: 100%;
+    margin-top: 1.2rem;
+    .infoMessage__buttonsContainer__btn {
+      @include buttonReset;
+      background-color: $white;
+      color: $purple;
+      font-size: 1rem;  
+      font-family: $font-secondary;
+      width: 100%;
+      letter-spacing: 0.5px;
+      padding: 0.5rem;
+      border-radius: 10px;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        color: $dark-purple;
+      }
+    }
+  }
+}

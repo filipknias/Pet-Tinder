@@ -29,10 +29,13 @@ import useFirestore from "./hooks/useFirestore";
 import { Notification as NotificationInterface } from "./types/global";
 import { formatErrorMessage } from './utilities/helpers';
 import { v4 as uuid } from "uuid";
+import CookiesMessage from './components/InfoMessages/CookiesMessage';
+import { LOCAL_STORAGE_COOKIES_KEY } from './types/constants';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
+  const { cookiesAccepted } = useSelector((state: RootState) => state.uiReducer);
   const { getQueriedItems }  = useFirestore(firestore);
 
   const getUserAndSetInState = async (uid: string) => {
@@ -70,6 +73,9 @@ const App: React.FC = () => {
     });
     // Get token
     dispatch(getToken());
+    // Check if cookies have been accepted
+    const cookies = localStorage.getItem(LOCAL_STORAGE_COOKIES_KEY);
+    if (cookies) dispatch({ type: uiTypes.MARK_COOKIES_ACCEPTED });
   }, []);
 
   useEffect(() => {
@@ -87,6 +93,9 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <div className="appMessages">
+        {!cookiesAccepted && <CookiesMessage />}
+      </div>
       <div className="container">
         <Header />
         <div className="container__main">

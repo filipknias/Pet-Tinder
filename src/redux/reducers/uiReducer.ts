@@ -3,10 +3,12 @@ import { Notification } from "../../types/global";
 
 interface UiState {
   notifications: Notification[];
+  cookiesAccepted: boolean;
 };
 
 const initialState: UiState = {
   notifications: [],
+  cookiesAccepted: false,
 };
 
 const uiReducer = (state: UiState = initialState, action: uiTypes.UiActionTypes): UiState => {
@@ -33,6 +35,12 @@ const uiReducer = (state: UiState = initialState, action: uiTypes.UiActionTypes)
       return {
         ...state,
         notifications: [],
+      }
+    };
+    case uiTypes.MARK_COOKIES_ACCEPTED: {
+      return {
+        ...state,
+        cookiesAccepted: true,
       }
     };
     default: return state;

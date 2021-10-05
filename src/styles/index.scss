@@ -53,3 +53,16 @@ a {
     @include flex(center, space-between, column);
   }
 }
+
+.appMessages {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  @media (max-width: $breakpoint-sm) {
+    top: auto;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+  }
+}

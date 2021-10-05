@@ -53,6 +53,9 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     if (pagination === null) return;
     setCurrentIndex(0);
+    if (token && isTokenExpired(token)) {
+      dispatch(getToken());
+    }
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
     dispatch(getPets(pagination.current_page, filters, source.token));
@@ -63,10 +66,12 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     if (pagination === null) return;
+    if (token && isTokenExpired(token)) {
+      dispatch(getToken());
+    }
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
     dispatch(getPets(pagination.current_page, filters, source.token));
-
     // Push info notification
     if (pagination.current_page > 1) {
       const infoNotification: Notification = {

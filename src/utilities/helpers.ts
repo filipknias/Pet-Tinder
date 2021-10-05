@@ -15,16 +15,19 @@ export const isTokenExpired = (token: StorageToken): boolean => {
 
 export const formatErrorMessage = (errorCode: string): string => {
   switch (errorCode) {
-    case "auth/email-already-in-use" || "auth/email-already-exists": {
+    case "auth/email-already-in-use": 
+    case "auth/email-already-exists": {
       return "Email already in use";
     };
-    case "auth/weak-password" || "auth/invalid-password": {
+    case "auth/weak-password":
+    case "auth/invalid-password": {
       return "Password is too weak";
     };
     case "auth/invalid-email" : {
       return "E-mail must be valid";
     };
-    case "auth/wrong-password" || "auth/user-not-found": {
+    case "auth/wrong-password":
+    case "auth/user-not-found": {
       return "Wrong e-mail or password"
     };
     case "auth/user-mismatch": {

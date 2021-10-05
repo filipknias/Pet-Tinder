@@ -30,12 +30,13 @@ import { Notification as NotificationInterface } from "./types/global";
 import { formatErrorMessage } from './utilities/helpers';
 import { v4 as uuid } from "uuid";
 import CookiesMessage from './components/InfoMessages/CookiesMessage';
-import { LOCAL_STORAGE_COOKIES_KEY } from './types/constants';
+import ApiMessage from './components/InfoMessages/ApiMessage';
+import { LOCAL_STORAGE_COOKIES_KEY, LOCAL_STORAGE_API_INFORMATION_KEY } from './types/constants';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const { isAuth, user } = useSelector((state: RootState) => state.authReducer);
-  const { cookiesAccepted } = useSelector((state: RootState) => state.uiReducer);
+  const { cookiesAccepted, apiInformationClosed } = useSelector((state: RootState) => state.uiReducer);
   const { getQueriedItems }  = useFirestore(firestore);
 
   const getUserAndSetInState = async (uid: string) => {
@@ -76,6 +77,9 @@ const App: React.FC = () => {
     // Check if cookies have been accepted
     const cookies = localStorage.getItem(LOCAL_STORAGE_COOKIES_KEY);
     if (cookies) dispatch({ type: uiTypes.MARK_COOKIES_ACCEPTED });
+    // Check if api information have been closed
+    const apiInfoClosed = localStorage.getItem(LOCAL_STORAGE_API_INFORMATION_KEY);
+    if (apiInfoClosed) dispatch({ type: uiTypes.MARK_API_INFORMATION_CLOSED });
   }, []);
 
   useEffect(() => {
@@ -85,7 +89,7 @@ const App: React.FC = () => {
       const emailVerifyNotification: NotificationInterface = {
         id: uuid(),
         message: "Profile is now verified",
-        type: "info"
+        type: "success"
       };
       dispatch(pushNotification(emailVerifyNotification));
     }
@@ -95,6 +99,7 @@ const App: React.FC = () => {
     <Router>
       <div className="appMessages">
         {!cookiesAccepted && <CookiesMessage />}
+        {!apiInformationClosed && <ApiMessage />}
       </div>
       <div className="container">
         <Header />

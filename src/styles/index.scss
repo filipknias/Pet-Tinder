@@ -55,6 +55,8 @@ a {
 }
 
 .appMessages {
+  @include flex(center, center, column);
+  gap: 1rem;
   position: fixed;
   top: 20px;
   right: 20px;
@@ -64,5 +66,11 @@ a {
     left: 0;
     bottom: 0;
     width: 100vw;
+    gap: 0;
+    & > div:first-child {
+      border-bottom: 2px solid $dark-purple;
+      border-top-right-radius: 10px;
+      border-top-left-radius: 10px;
+    }
   }
 }

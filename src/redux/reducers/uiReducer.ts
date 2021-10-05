@@ -4,11 +4,13 @@ import { Notification } from "../../types/global";
 interface UiState {
   notifications: Notification[];
   cookiesAccepted: boolean;
+  apiInformationClosed: boolean;
 };
 
 const initialState: UiState = {
   notifications: [],
   cookiesAccepted: false,
+  apiInformationClosed: false,
 };
 
 const uiReducer = (state: UiState = initialState, action: uiTypes.UiActionTypes): UiState => {
@@ -41,6 +43,12 @@ const uiReducer = (state: UiState = initialState, action: uiTypes.UiActionTypes)
       return {
         ...state,
         cookiesAccepted: true,
+      }
+    };
+    case uiTypes.MARK_API_INFORMATION_CLOSED: {
+      return {
+        ...state,
+        apiInformationClosed: true,
       }
     };
     default: return state;

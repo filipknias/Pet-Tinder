@@ -26,6 +26,7 @@
   }
   .infoMessage__buttonsContainer {
     @include flex(center, flex-start);
+    gap: 1rem;
     width: 100%;
     margin-top: 1.2rem;
     .infoMessage__buttonsContainer__btn {
@@ -34,11 +35,12 @@
       color: $purple;
       font-size: 1rem;  
       font-family: $font-secondary;
-      width: 100%;
       letter-spacing: 0.5px;
       padding: 0.5rem;
       border-radius: 10px;
       transition: all 0.2s ease-in-out;
+      text-align: center;
+      flex: 1;
       &:hover {
         color: $dark-purple;
       }

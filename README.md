@@ -1,6 +1,7 @@
 # Pet Tinder
 
 Project made with https://www.petfinder.com/developers/ REST API, inspired by Tinder app but with pets.
+
 Main features: 
 - Register and sign in to account
 - Verify profile with e-mail verification

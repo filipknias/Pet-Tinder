@@ -10,7 +10,7 @@ Main features:
 - Like, reject pets and store this data in database
 - Filter pets
 
-**Front-End:** HTML, CSS(SCSS), Javascript, React, Redux 
+**Front-End:** HTML, CSS(SCSS), Typescript, React, Redux 
 
 **Back-End:** Firebase
 

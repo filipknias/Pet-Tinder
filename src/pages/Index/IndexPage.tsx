@@ -137,12 +137,13 @@ const IndexPage: React.FC = () => {
   }
 
   const handleRefresh = async () => {
-    if (loading || pagination === null) return;
+    if (loading) return;
     setButtonsDisabled(true);
     // Get token
     if (token && isTokenExpired(token)) {
       dispatch(getToken());
     }
+    if (pagination === null) return;
     // Get pets
     dispatch(getPets(pagination.current_page, filters));
     // Reset state

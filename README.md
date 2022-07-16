@@ -18,5 +18,5 @@
 - Redux
 - Firebase
 
-### Live preview
+### API
 - https://www.petfinder.com/developers

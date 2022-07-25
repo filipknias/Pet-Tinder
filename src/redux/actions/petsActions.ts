@@ -8,7 +8,7 @@ import * as petsTypes from "../types/petsTypes";
 import { formatToken, isTokenExpired } from "../../utilities/helpers";
 import { firestore } from "../../utilities/firebase";
 import axios, { CancelToken } from "axios";
-import { PROXY_SERVER, LOCAL_STORAGE_TOKEN_KEY } from "../../types/constants";
+import { LOCAL_STORAGE_TOKEN_KEY } from "../../types/constants";
 
 const generateApiQuery = (filters: Filters) => {
   const keyValuePairs = Object.entries(filters).filter(([key, value]) => value !== null).map(([key, value]) => {
@@ -52,7 +52,7 @@ export const getPets = (page: number = 1, filters: Filters, cancelToken?: Cancel
   try {
     dispatch({ type: petsTypes.PETS_START });
     const queryParams = `page=${page}&${generateApiQuery(filters)}`;
-    const { data: { animals, pagination } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals?${queryParams}`, { cancelToken });
+    const { data: { animals, pagination } } = await axios.get(`https://api.petfinder.com/v2/animals?${queryParams}`, { cancelToken });
     // Get user uid
     const user = getState().authReducer.user;
     let petsData: Pet[] = animals;
@@ -125,7 +125,7 @@ export const getLikedPets = (uid: string, cancelToken?: CancelToken) => async (d
     });
     // Get pets from api
     const petsPromises = petsIds.map(async (id) => {
-      const { data: { animal } } = await axios.get(`${PROXY_SERVER}/https://api.petfinder.com/v2/animals/${id}`, { cancelToken });
+      const { data: { animal } } = await axios.get(`https://api.petfinder.com/v2/animals/${id}`, { cancelToken });
       return animal;
     })
     const pets = await Promise.all(petsPromises);
